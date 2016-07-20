@@ -71,8 +71,11 @@ public class SequenceErrorEvent {
     public enum ErrorType {
         UNABLE_CALCULATE_ORG_SEQ("Couldn't calculate original sequence from whole sequence"),
         ORG_SEQ_WRONG("Original sequence does not match interactor sequence"),
-        RES_SEQ_CONTAINS_LOWER_CASE("Resulting sequence contains lower case letters");
-
+        RES_SEQ_CONTAINS_LOWER_CASE("Resulting sequence contains lower case letters"),
+        RES_SEQ_SMALLER_ORG_SEQ("Resulting sequence is contains less letters as resulting sequence"),
+        RES_SEQ_WITH_WRONG_DELETION("Resulting sequence contains dot but is not right placed"),
+        RES_SEQ_TO_MANY_DOTS("Resulting sequence contains more than 3 dots");
+        
         private String message;
 
         ErrorType(String message) {
