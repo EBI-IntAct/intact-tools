@@ -16,8 +16,8 @@
     <properties>
         <spring.version>3.2.9.RELEASE</spring.version>
         <bridges.version>2.1.20-SNAPSHOT</bridges.version>
-        <psi.jami.version>3.0.2-SNAPSHOT</psi.jami.version>
-        <intact.jami.version>1.2.17-SNAPSHOT</intact.jami.version>
+        <psi.jami.version>3.0.1</psi.jami.version>
+        <intact.jami.version>1.2.16</intact.jami.version>
     </properties>
 
     <dependencies>
