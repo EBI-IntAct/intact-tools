@@ -1,13 +1,13 @@
 package uk.ac.ebi.intact.tools.feature.shortlabel.generator.utils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.Polymer;
+import psidev.psi.mi.jami.model.Range;
 import uk.ac.ebi.intact.jami.model.extension.IntactFeatureEvidence;
 import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.AminoAcids;
-
-import java.util.Objects;
 
 /**
  * Created by Maximilian Koch (mkoch@ebi.ac.uk).
@@ -82,22 +82,60 @@ public class ShortlabelGeneratorHelper {
         return sequenceAsThreeLetterCode;
     }
 
-    public String newSequence2ThreeLetterCodeOnDelete(String originalSequence) {
-        String sequenceAsThreeLetterCode = AminoAcids.getThreeLetterCodeByOneLetterCode(originalSequence.charAt(0)) + "_";
-        for (int i = 0; i < originalSequence.length() - 2; i++) {
-            sequenceAsThreeLetterCode += "del_";
+    public boolean containsDot(String newSequence) {
+        return newSequence.contains(".");
+    }
+
+    public boolean containsDot(char newSequence) {
+        return newSequence == '.';
+    }
+
+    public boolean deletionOnWrongPlace(String resSeq) {
+        char[] chars = resSeq.toCharArray();
+        boolean foundLetter = false;
+        for (int pos = chars.length - 1; 0 <= pos; pos--) {
+            if (!containsDot(chars[pos])) {
+                foundLetter = true;
+            } else if (foundLetter && !containsDot(chars[pos])) {
+                return true;
+            }
         }
-        sequenceAsThreeLetterCode += AminoAcids.getThreeLetterCodeByOneLetterCode(originalSequence.charAt(originalSequence.length() - 1));
-        return sequenceAsThreeLetterCode;
+        return false;
     }
 
-    public boolean isDeletion(String originalSequence, String newSequence) {
-        return newSequence.length() == 2 &&
-                originalSequence.charAt(0) == newSequence.charAt(0) &&
-                originalSequence.charAt(originalSequence.length() - 1) == newSequence.charAt(newSequence.length() - 1);
+    public boolean containsToManyDots(String resSeq){
+      return StringUtils.countMatches(resSeq, ".") > 3;
     }
 
-    public boolean isUndefinedMutation(IntactFeatureEvidence featureEvidence) {
-        return Objects.equals(featureEvidence.getShortName(), "undefined mutation");
+    public void sortRanges(Range[] ranges, int startPos, int endPos){
+        int startCourser = startPos;
+        int endCourser = endPos;
+
+        Range pivotRange = ranges[endPos +(startPos - endPos)/2];
+        while (startCourser <= endCourser) {
+            while (ranges[startCourser].getStart().getStart() < pivotRange.getStart().getStart()) {
+                startCourser++;
+            }
+            while (ranges[endCourser].getStart().getStart() > pivotRange.getStart().getStart()) {
+                endCourser--;
+            }
+            if (startCourser <= endCourser) {
+                swapRanges(ranges, startCourser, endCourser);
+                startCourser++;
+                endCourser--;
+            }
+        }
+        if (startPos < endCourser){
+            sortRanges(ranges, startPos, endCourser);
+        }
+        if (startCourser < endPos){
+            sortRanges(ranges, startCourser, endPos);
+        }
+    }
+
+    private void swapRanges(Range[] ranges, int startCourser, int endCourser) {
+        Range range = ranges[startCourser];
+        ranges[startCourser] = ranges[endCourser];
+        ranges[endCourser] = range;
     }
 }
