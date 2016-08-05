@@ -13,7 +13,7 @@
 
     <properties>
         <spring.version>3.2.9.RELEASE</spring.version>
-        <bridges.version>2.1.19</bridges.version>
+        <bridges.version>2.1.19.1</bridges.version>
         <psi.jami.version>3.0.1</psi.jami.version>
         <intact.jami.version>1.2.16</intact.jami.version>
     </properties>
