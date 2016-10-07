@@ -119,6 +119,8 @@ public class ShortlabelGenerator {
             if (annotation.getTopic().equals(noUniprotUpdateTerm)) {
                 AnnotationFoundEvent event = new AnnotationFoundEvent(featureAc, interactorAc, AnnotationFoundEvent.AnnotationType.NO_UNIPROT_UPDATE);
                 manager.fireOnAnnotationFoundEvent(event);
+                AnnotationFoundEvent event1 = new AnnotationFoundEvent(featureAc, interactorAc, AnnotationFoundEvent.AnnotationType.NO_MUTATION_EXPORT);
+                manager.fireOnAnnotationFoundEvent(event1);
                 return;
             }
         }
