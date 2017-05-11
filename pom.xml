@@ -19,6 +19,8 @@
     <properties>
         <currentVersion>${version}</currentVersion>
         <spring.version>3.2.9.RELEASE</spring.version>
+        <psi.jami.version>3.0.1</psi.jami.version>
+        <intact.jami.version>1.2.16</intact.jami.version>
     </properties>
 
     <scm>
@@ -46,16 +48,37 @@
                     <allowUntracked>true</allowUntracked>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Tests.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
 
     <modules>
-        <module>feature-shortabel-generator</module>
+        <module>feature-shortlabel-generator</module>
     </modules>
 
     <dependencies>
-
+        <!-- Test -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <repositories>

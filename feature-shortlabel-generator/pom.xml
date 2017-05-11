@@ -9,14 +9,8 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>feature-shortabel-generator</artifactId>
-
-    <properties>
-        <spring.version>3.2.9.RELEASE</spring.version>
-        <bridges.version>2.1.21</bridges.version>
-        <psi.jami.version>3.0.1</psi.jami.version>
-        <intact.jami.version>1.2.16</intact.jami.version>
-    </properties>
+    <artifactId>feature-shortlabel-generator</artifactId>
+    <name>IntAct Tools :: Feature Shortlabel Generator</name>
 
     <dependencies>
         <dependency>
@@ -69,14 +63,6 @@
             <version>3.0</version>
         </dependency>
 
-        <!-- Test -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>javax.el</groupId>
             <artifactId>el-api</artifactId>
@@ -84,24 +70,4 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/*Tests.java</include>
-                    </includes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
