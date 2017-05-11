@@ -1,8 +1,7 @@
 package impl;
 
-import org.hibernate.annotations.SourceType;
-import uk.ac.ebi.intact.tools.feature.shortlabel.generator.listener.ShortlabelGeneratorListener;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.events.*;
+import uk.ac.ebi.intact.tools.feature.shortlabel.generator.listener.ShortlabelGeneratorListener;
 
 /**
  * Created by Maximilian Koch (mkoch@ebi.ac.uk).

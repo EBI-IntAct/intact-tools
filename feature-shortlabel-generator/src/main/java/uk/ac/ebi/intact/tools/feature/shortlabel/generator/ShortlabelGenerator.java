@@ -13,7 +13,6 @@ import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.events.*;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.listener.ShortlabelGeneratorListener;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.manager.ShortlabelGeneratorManager;
-import uk.ac.ebi.intact.tools.feature.shortlabel.generator.utils.OntologyServiceHelper;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.utils.ShortlabelGeneratorHelper;
 
 import java.util.Collection;
@@ -24,13 +23,25 @@ import java.util.Set;
  * Created by Maximilian Koch (mkoch@ebi.ac.uk).
  */
 public class ShortlabelGenerator {
-    private final static String MUTATION_MI_ID = "MI:0118";
     private final static String CV_TERM_NO_MUTATION_UPDATE = "EBI-11795051";
     private final static String CV_TERM_NO_MUTATION_EXPORT = "EBI-11806127";
     private final static String CV_TERM_NO_UNIPROT_UPDATE = "EBI-607777";
 
-    private final static int OLS_SEARCHING_DEPTH = 10;
     private final static int TRIES = 3;
+
+    private final static String MUTATION_MI_ID = "MI:0118";
+    private final static String MUTATION_ENABLING_INTERACTION_MI_ID = "MI:2227";
+    private final static String MUTATION_DECREASING_MI_ID = "MI:0119";
+    private final static String MUTATION_DECREASING_RATE_MI_ID = "MI:1130";
+    private final static String MUTATION_DECREASING_STRENGTH_MI_ID = "MI:1133";
+    private final static String MUTATION_DISRUPTING_MI_ID = "MI:0573";
+    private final static String MUTATION_DISRUPTING_RATE_MI_ID = "MI:1129";
+    private final static String MUTATION_DISRUPTING_STRENGTH_MI_ID = "MI:1128";
+    private final static String MUTATION_INCREASING_MI_ID = "MI:0382";
+    private final static String MUTATION_INCREASING_RATE_MI_ID = "MI:1131";
+    private final static String MUTATION_INCREASING_STRENGTH_MI_ID = "MI:1132";
+    private final static String MUTATION_WITH_NO_EFFECT_MI_ID = "MI:2226";
+    private final static String REQUIRED_TO_BIND_MI_ID = "MI:0429";
 
     private static Set<String> allowedFeatureTypes = new HashSet<String>();
     private static CvTerm noMutationUpdateTerm;
@@ -45,7 +56,19 @@ public class ShortlabelGenerator {
     }
 
     private void initAllowedFeatureTypes() {
-        allowedFeatureTypes.addAll(OntologyServiceHelper.getOntologyServiceHelper().getAssociatedMITerms(MUTATION_MI_ID, OLS_SEARCHING_DEPTH));
+        allowedFeatureTypes.add(MUTATION_MI_ID);
+        allowedFeatureTypes.add(MUTATION_ENABLING_INTERACTION_MI_ID);
+        allowedFeatureTypes.add(MUTATION_DECREASING_MI_ID);
+        allowedFeatureTypes.add(MUTATION_DECREASING_RATE_MI_ID);
+        allowedFeatureTypes.add(MUTATION_DECREASING_STRENGTH_MI_ID);
+        allowedFeatureTypes.add(MUTATION_DISRUPTING_MI_ID);
+        allowedFeatureTypes.add(MUTATION_DISRUPTING_RATE_MI_ID);
+        allowedFeatureTypes.add(MUTATION_DISRUPTING_STRENGTH_MI_ID);
+        allowedFeatureTypes.add(MUTATION_INCREASING_MI_ID);
+        allowedFeatureTypes.add(MUTATION_INCREASING_RATE_MI_ID);
+        allowedFeatureTypes.add(MUTATION_INCREASING_STRENGTH_MI_ID);
+        allowedFeatureTypes.add(MUTATION_WITH_NO_EFFECT_MI_ID);
+        allowedFeatureTypes.add(REQUIRED_TO_BIND_MI_ID);
     }
 
     public void addListener(ShortlabelGeneratorListener shortlabelGeneratorListener) {
@@ -119,6 +142,8 @@ public class ShortlabelGenerator {
             if (annotation.getTopic().equals(noUniprotUpdateTerm)) {
                 AnnotationFoundEvent event = new AnnotationFoundEvent(featureAc, interactorAc, AnnotationFoundEvent.AnnotationType.NO_UNIPROT_UPDATE);
                 manager.fireOnAnnotationFoundEvent(event);
+                AnnotationFoundEvent event1 = new AnnotationFoundEvent(featureAc, interactorAc, AnnotationFoundEvent.AnnotationType.NO_MUTATION_EXPORT);
+                manager.fireOnAnnotationFoundEvent(event1);
                 return;
             }
         }
