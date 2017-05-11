@@ -9,28 +9,16 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>feature-shortabel-genrator</artifactId>
+    <artifactId>feature-shortabel-generator</artifactId>
 
     <properties>
         <spring.version>3.2.9.RELEASE</spring.version>
-        <bridges.version>2.1.19.1</bridges.version>
+        <bridges.version>2.1.21</bridges.version>
         <psi.jami.version>3.0.1</psi.jami.version>
         <intact.jami.version>1.2.16</intact.jami.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>uk.ac.ebi.intact.bridges</groupId>
-            <artifactId>intact-ols-light</artifactId>
-            <version>${bridges.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j13</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <dependency>
             <groupId>psidev.psi.mi.jami</groupId>
             <artifactId>jami-core</artifactId>
