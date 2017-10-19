@@ -1,8 +1,9 @@
-import impl.FeatureListener;
+package uk.ac.ebi.intact.tools.feature.shortlabel.generator;
+
+import uk.ac.ebi.intact.tools.feature.shortlabel.generator.impl.FeatureListener;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import uk.ac.ebi.intact.tools.feature.shortlabel.generator.ShortlabelGenerator;
 
 /**
  * Created by Maximilian Koch (mkoch@ebi.ac.uk).
