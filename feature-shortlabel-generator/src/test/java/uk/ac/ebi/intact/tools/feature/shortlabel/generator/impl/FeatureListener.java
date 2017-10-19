@@ -1,4 +1,4 @@
-package impl;
+package uk.ac.ebi.intact.tools.feature.shortlabel.generator.impl;
 
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.events.*;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.listener.ShortlabelGeneratorListener;

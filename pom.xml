@@ -11,7 +11,7 @@
     <groupId>uk.ac.ebi.intact.tools</groupId>
     <artifactId>tools-master</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
 
     <name>IntAct Tools</name>
     <description>Tools Master POM</description>
@@ -19,8 +19,8 @@
     <properties>
         <currentVersion>${version}</currentVersion>
         <spring.version>3.2.9.RELEASE</spring.version>
-        <psi.jami.version>3.0.1</psi.jami.version>
-        <intact.jami.version>1.2.16</intact.jami.version>
+        <psi.jami.version>3.0.12</psi.jami.version>
+        <intact.jami.version>1.2.23</intact.jami.version>
     </properties>
 
     <scm>
@@ -28,6 +28,10 @@
         <developerConnection>scm:git:https://github.com/EBI-IntAct/intact-tools.git</developerConnection>
         <url>https://github.com/EBI-IntAct/intact-tools</url>
     </scm>
+
+    <modules>
+        <module>feature-shortlabel-generator</module>
+    </modules>
 
     <build>
         <plugins>
@@ -65,11 +69,6 @@
             </plugin>
         </plugins>
     </build>
-
-
-    <modules>
-        <module>feature-shortlabel-generator</module>
-    </modules>
 
     <dependencies>
         <!-- Test -->
