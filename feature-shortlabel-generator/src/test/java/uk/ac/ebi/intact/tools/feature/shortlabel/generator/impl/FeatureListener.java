@@ -29,7 +29,7 @@ public class FeatureListener implements ShortlabelGeneratorListener {
 
     @Override
     public void onUnmodifiedMutationShortlabel(UnmodifiedMutationShortlabelEvent event) {
-        System.out.println(event.getFeatureAc()  + "\t original shortlabel is correct");
+        System.out.println(event.getFeatureAc()  + "\t original shortlabel is correct: " + "\t" + event.getFeatureEvidence().getShortName());
     }
 
     @Override

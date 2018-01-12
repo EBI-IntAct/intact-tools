@@ -24,6 +24,6 @@ public class ShortlabelGeneratorTest {
     public void ShortlabelGeneratorTest_1(){
         ShortlabelGenerator shortlabelGenerator = getShortlabelGenerator();
         shortlabelGenerator.addListener(new FeatureListener());
-            shortlabelGenerator.generateNewShortLabel("EBI-6597646");
+            shortlabelGenerator.generateNewShortLabel("EBI-10921757");
     }
 }

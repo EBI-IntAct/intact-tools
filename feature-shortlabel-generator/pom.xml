@@ -12,6 +12,10 @@
     <artifactId>feature-shortlabel-generator</artifactId>
     <name>IntAct Tools :: Feature Shortlabel Generator</name>
 
+    <properties>
+        <db.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</db.url>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>psidev.psi.mi.jami</groupId>
