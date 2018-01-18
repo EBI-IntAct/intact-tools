@@ -174,116 +174,119 @@ public class ShortlabelGenerator {
                 noMutationUpdate = true;
             }
         }
-
-        featureEvidence.setShortName("");
-        if (featureEvidence.getRanges() == null || featureEvidence.getRanges().size() == 0) {
-            RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, null, RangeErrorEvent.ErrorType.RANGE_NULL);
-            manager.fireOnRangeErrorEvent(event);
-            return;
+        if(!noMutationUpdate) {
+            featureEvidence.setShortName("");
         }
-
-        ranges = featureEvidence.getRanges();
-        ExperimentalRange[] experimentalRanges = ranges.toArray(new ExperimentalRange[ranges.size()]);
-
-        helper.sortRanges(experimentalRanges, 0, experimentalRanges.length - 1);
-        for (int index = 0; index <= experimentalRanges.length - 1; index++) {
-            String newShortlabel = "";
-            long rangeStart;
-            long rangeEnd;
-            String orgSeq;
-            String resSeq;
-            String calculatedOrgSeq;
-            boolean isDeletion = false;
-
-            String rangeAc = experimentalRanges[index].getAc();
-
-            if (experimentalRanges[index].getStart().getStart() == 0) {
-                RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.START_POS_ZERO);
-                manager.fireOnRangeErrorEvent(event);
-                return;
-            }
-            if (experimentalRanges[index].getStart().isPositionUndetermined()) {
-                RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.START_POS_UNDETERMINED);
-                manager.fireOnRangeErrorEvent(event);
-                return;
-            }
-            if (experimentalRanges[index].getResultingSequence().getOriginalSequence() == null) {
-                RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.ORG_SEQ_NULL);
-                manager.fireOnRangeErrorEvent(event);
-                return;
-            }
-            if (experimentalRanges[index].getResultingSequence().getNewSequence() == null) {
-                RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.RES_SEQ_NULL);
+            if (featureEvidence.getRanges() == null || featureEvidence.getRanges().size() == 0) {
+                RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, null, RangeErrorEvent.ErrorType.RANGE_NULL);
                 manager.fireOnRangeErrorEvent(event);
                 return;
             }
 
-            rangeStart = experimentalRanges[index].getStart().getStart();
-            rangeEnd = experimentalRanges[index].getEnd().getEnd();
-            orgSeq = experimentalRanges[index].getResultingSequence().getOriginalSequence();
-            resSeq = experimentalRanges[index].getResultingSequence().getNewSequence();
-            calculatedOrgSeq = helper.generateOrgSeq(interactorSeq, rangeStart, rangeEnd);
+            ranges = featureEvidence.getRanges();
+            ExperimentalRange[] experimentalRanges = ranges.toArray(new ExperimentalRange[ranges.size()]);
 
-            if (calculatedOrgSeq == null) {
-                SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.UNABLE_CALCULATE_ORG_SEQ);
-                manager.fireOnSeqErrorEvent(event);
-                return;
-            }
-            if (helper.orgSeqWrong(orgSeq, calculatedOrgSeq)) {
-                String message = "Original sequence does not match interactor sequence. Is " + orgSeq + " should be " + calculatedOrgSeq + " Range: (" + rangeStart + "-" + rangeEnd + ")";
-                SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.ORG_SEQ_WRONG, message);
-                manager.fireOnSeqErrorEvent(event);
-                return;
-            }
-            if (helper.containsLowerCaseLetters(resSeq)) {
-                SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_CONTAINS_LOWER_CASE);
-                manager.fireOnSeqErrorEvent(event);
-                return;
-            }
+            helper.sortRanges(experimentalRanges, 0, experimentalRanges.length - 1);
+            for (int index = 0; index <= experimentalRanges.length - 1; index++) {
+                String newShortlabel = "";
+                long rangeStart;
+                long rangeEnd;
+                String orgSeq;
+                String resSeq;
+                String calculatedOrgSeq;
+                boolean isDeletion = false;
 
-            if (helper.resultingSeqDescreased(orgSeq, resSeq)) {
-                SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_SMALLER_ORG_SEQ);
-                manager.fireOnSeqErrorEvent(event);
-                return;
-            }
+                String rangeAc = experimentalRanges[index].getAc();
 
-            if (helper.containsDot(resSeq)) {
-                if (helper.deletionOnWrongPlace(resSeq)) {
-                    SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_WITH_WRONG_DELETION);
+                if (experimentalRanges[index].getStart().getStart() == 0) {
+                    RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.START_POS_ZERO);
+                    manager.fireOnRangeErrorEvent(event);
+                    return;
+                }
+                if (experimentalRanges[index].getStart().isPositionUndetermined()) {
+                    RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.START_POS_UNDETERMINED);
+                    manager.fireOnRangeErrorEvent(event);
+                    return;
+                }
+                if (experimentalRanges[index].getResultingSequence().getOriginalSequence() == null) {
+                    RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.ORG_SEQ_NULL);
+                    manager.fireOnRangeErrorEvent(event);
+                    return;
+                }
+                if (experimentalRanges[index].getResultingSequence().getNewSequence() == null) {
+                    RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.RES_SEQ_NULL);
+                    manager.fireOnRangeErrorEvent(event);
+                    return;
+                }
+
+                rangeStart = experimentalRanges[index].getStart().getStart();
+                rangeEnd = experimentalRanges[index].getEnd().getEnd();
+                orgSeq = experimentalRanges[index].getResultingSequence().getOriginalSequence();
+                resSeq = experimentalRanges[index].getResultingSequence().getNewSequence();
+                calculatedOrgSeq = helper.generateOrgSeq(interactorSeq, rangeStart, rangeEnd);
+
+                if (calculatedOrgSeq == null) {
+                    SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.UNABLE_CALCULATE_ORG_SEQ);
                     manager.fireOnSeqErrorEvent(event);
                     return;
                 }
-                if (helper.containsToManyDots(resSeq)) {
-                    SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_TO_MANY_DOTS);
+                if (helper.orgSeqWrong(orgSeq, calculatedOrgSeq)) {
+                    String message = "Original sequence does not match interactor sequence. Is " + orgSeq + " should be " + calculatedOrgSeq + " Range: (" + rangeStart + "-" + rangeEnd + ")";
+                    SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.ORG_SEQ_WRONG, message);
                     manager.fireOnSeqErrorEvent(event);
                     return;
                 }
-                isDeletion = true;
+                if (helper.containsLowerCaseLetters(resSeq)) {
+                    SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_CONTAINS_LOWER_CASE);
+                    manager.fireOnSeqErrorEvent(event);
+                    return;
+                }
+
+                if (helper.resultingSeqDescreased(orgSeq, resSeq)) {
+                    SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_SMALLER_ORG_SEQ);
+                    manager.fireOnSeqErrorEvent(event);
+                    return;
+                }
+
+                if (helper.containsDot(resSeq)) {
+                    if (helper.deletionOnWrongPlace(resSeq)) {
+                        SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_WITH_WRONG_DELETION);
+                        manager.fireOnSeqErrorEvent(event);
+                        return;
+                    }
+                    if (helper.containsToManyDots(resSeq)) {
+                        SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_TO_MANY_DOTS);
+                        manager.fireOnSeqErrorEvent(event);
+                        return;
+                    }
+                    isDeletion = true;
+                }
+
+                newShortlabel += helper.seq2ThreeLetterCodeOnDefault(orgSeq);
+
+                if (helper.isSingleAminoAcidChange(rangeStart, rangeEnd)) {
+                    newShortlabel += helper.generateNonSequentialRange(rangeStart);
+                } else {
+                    newShortlabel += helper.generateSequentialRange(rangeStart, rangeEnd);
+                }
+
+                if (isDeletion) {
+                    ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.DELETION);
+                    manager.fireOnResSeqChangedEvent(event);
+                } else if (helper.resultingSeqIncreased(orgSeq, resSeq)) {
+                    ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.INCREASE);
+                    manager.fireOnResSeqChangedEvent(event);
+                } else {
+                    ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc,
+                            interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.STABLE);
+                    manager.fireOnResSeqChangedEvent(event);
+                }
+                newShortlabel += helper.seq2ThreeLetterCodeOnDefault(resSeq);
+                if(!noMutationUpdate) {
+                    featureEvidence.setShortName(featureEvidence.getShortName() + newShortlabel + (index < experimentalRanges.length - 1 ? "," : ""));
+                }
             }
 
-            newShortlabel += helper.seq2ThreeLetterCodeOnDefault(orgSeq);
-
-            if (helper.isSingleAminoAcidChange(rangeStart, rangeEnd)) {
-                newShortlabel += helper.generateNonSequentialRange(rangeStart);
-            } else {
-                newShortlabel += helper.generateSequentialRange(rangeStart, rangeEnd);
-            }
-
-            if (isDeletion) {
-                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.DELETION);
-                manager.fireOnResSeqChangedEvent(event);
-            } else if (helper.resultingSeqIncreased(orgSeq, resSeq)) {
-                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.INCREASE);
-                manager.fireOnResSeqChangedEvent(event);
-            } else {
-                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc,
-                        interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.STABLE);
-                manager.fireOnResSeqChangedEvent(event);
-            }
-            newShortlabel += helper.seq2ThreeLetterCodeOnDefault(resSeq);
-
-            featureEvidence.setShortName(featureEvidence.getShortName() + newShortlabel + (index < experimentalRanges.length - 1 ? "," : ""));
-        }
         if (noMutationUpdate || orgShortlabel.equals(featureEvidence.getShortName())) {
             UnmodifiedMutationShortlabelEvent event = new UnmodifiedMutationShortlabelEvent(featureAc, interactorAc, featureEvidence, noMutationUpdate);
             manager.fireOnUnmodifiedMutationShortlabelEvent(event);
