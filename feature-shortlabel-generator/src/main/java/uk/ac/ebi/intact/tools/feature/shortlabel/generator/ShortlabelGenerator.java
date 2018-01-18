@@ -287,6 +287,7 @@ public class ShortlabelGenerator {
                 }
             }
 
+
         if (noMutationUpdate || orgShortlabel.equals(featureEvidence.getShortName())) {
             UnmodifiedMutationShortlabelEvent event = new UnmodifiedMutationShortlabelEvent(featureAc, interactorAc, featureEvidence, noMutationUpdate);
             manager.fireOnUnmodifiedMutationShortlabelEvent(event);
