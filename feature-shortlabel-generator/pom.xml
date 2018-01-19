@@ -4,13 +4,17 @@
     <parent>
         <groupId>uk.ac.ebi.intact.tools</groupId>
         <artifactId>tools-master</artifactId>
-        <version>1.0.8</version>
+        <version>1.0.9</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>feature-shortlabel-generator</artifactId>
     <name>IntAct Tools :: Feature Shortlabel Generator</name>
+
+    <properties>
+        <db.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</db.url>
+    </properties>
 
     <dependencies>
         <dependency>
