@@ -13,6 +13,7 @@ import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.events.*;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.listener.ShortlabelGeneratorListener;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.manager.ShortlabelGeneratorManager;
+import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.Constants;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.utils.ShortlabelGeneratorHelper;
 
 import java.util.Collection;
@@ -175,7 +176,7 @@ public class ShortlabelGenerator {
             }
         }
         if(!noMutationUpdate) {
-            featureEvidence.setShortName("");
+            featureEvidence.setShortName(Constants.PROTEIN_PREFIX);
         }
             if (featureEvidence.getRanges() == null || featureEvidence.getRanges().size() == 0) {
                 RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, null, RangeErrorEvent.ErrorType.RANGE_NULL);
@@ -186,6 +187,9 @@ public class ShortlabelGenerator {
             ranges = featureEvidence.getRanges();
             ExperimentalRange[] experimentalRanges = ranges.toArray(new ExperimentalRange[ranges.size()]);
 
+        if (experimentalRanges.length>1){
+            featureEvidence.setShortName(featureEvidence.getShortName()+"[");
+        }
             helper.sortRanges(experimentalRanges, 0, experimentalRanges.length - 1);
             for (int index = 0; index <= experimentalRanges.length - 1; index++) {
                 String newShortlabel = "";
@@ -283,10 +287,12 @@ public class ShortlabelGenerator {
                 }
                 newShortlabel += helper.seq2ThreeLetterCodeOnDefault(resSeq);
                 if(!noMutationUpdate) {
-                    featureEvidence.setShortName(featureEvidence.getShortName() + newShortlabel + (index < experimentalRanges.length - 1 ? "," : ""));
+                    featureEvidence.setShortName(featureEvidence.getShortName() + newShortlabel + (index < experimentalRanges.length - 1 ? ";" : ""));
                 }
             }
-
+        if (experimentalRanges.length>1){
+            featureEvidence.setShortName(featureEvidence.getShortName()+"]");
+        }
 
         if (noMutationUpdate || orgShortlabel.equals(featureEvidence.getShortName())) {
             UnmodifiedMutationShortlabelEvent event = new UnmodifiedMutationShortlabelEvent(featureAc, interactorAc, featureEvidence, noMutationUpdate);
