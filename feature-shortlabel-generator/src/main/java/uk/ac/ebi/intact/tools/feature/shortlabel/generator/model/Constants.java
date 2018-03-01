@@ -7,5 +7,7 @@ public class Constants {
 
     public static final String PROTEIN_PREFIX="p.";
     public static final String DEL_INS="delins";
+    public static final String DELETION="del";
+    public static final String INSERTION="ins";
     public static final String ORG_SEQ_SEPERATOR="_";
 }

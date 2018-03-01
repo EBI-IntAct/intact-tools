@@ -275,9 +275,11 @@ public class ShortlabelGenerator {
                 }*/
 
                 if (isDeletion) {
+                    newShortlabel+=Constants.DELETION;
                     ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.DELETION);
                     manager.fireOnResSeqChangedEvent(event);
                 } else if (helper.resultingSeqIncreased(orgSeq, resSeq)) {
+                    newShortlabel+=Constants.INSERTION;
                     ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.INCREASE);
                     manager.fireOnResSeqChangedEvent(event);
                 } else {
