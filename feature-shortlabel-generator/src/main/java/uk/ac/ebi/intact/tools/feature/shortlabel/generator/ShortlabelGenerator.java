@@ -266,13 +266,13 @@ public class ShortlabelGenerator {
                     isDeletion = true;
                 }
 
-                newShortlabel += helper.seq2ThreeLetterCodeOnDefault(orgSeq);
+                newShortlabel += helper.seq2ThreeLetterCodeOnDefaultOrgSeq(orgSeq,rangeStart,rangeEnd);
 
-                if (helper.isSingleAminoAcidChange(rangeStart, rangeEnd)) {
+                /*if (helper.isSingleAminoAcidChange(rangeStart, rangeEnd)) {
                     newShortlabel += helper.generateNonSequentialRange(rangeStart);
                 } else {
                     newShortlabel += helper.generateSequentialRange(rangeStart, rangeEnd);
-                }
+                }*/
 
                 if (isDeletion) {
                     ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.DELETION);
@@ -281,11 +281,14 @@ public class ShortlabelGenerator {
                     ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.INCREASE);
                     manager.fireOnResSeqChangedEvent(event);
                 } else {
+                    if (!helper.isSingleAminoAcidChange(rangeStart, rangeEnd)) {
+                       newShortlabel+=Constants.DEL_INS;
+                    }
                     ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc,
                             interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.STABLE);
                     manager.fireOnResSeqChangedEvent(event);
                 }
-                newShortlabel += helper.seq2ThreeLetterCodeOnDefault(resSeq);
+                newShortlabel += helper.seq2ThreeLetterCodeOnDefaultResSeq(resSeq);
                 if(!noMutationUpdate) {
                     featureEvidence.setShortName(featureEvidence.getShortName() + newShortlabel + (index < experimentalRanges.length - 1 ? ";" : ""));
                 }

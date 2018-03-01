@@ -8,6 +8,7 @@ import psidev.psi.mi.jami.model.Range;
 import uk.ac.ebi.intact.jami.model.extension.IntactFeatureEvidence;
 import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.AminoAcids;
+import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.Constants;
 
 /**
  * Created by Maximilian Koch (mkoch@ebi.ac.uk).
@@ -79,6 +80,35 @@ public class ShortlabelGeneratorHelper {
                 sequenceAsThreeLetterCode += "_";
             }
         }
+        return sequenceAsThreeLetterCode;
+    }
+
+    public String seq2ThreeLetterCodeOnDefaultResSeq(String sequence) {
+
+        //example AlaAlaAlaAla
+
+        String sequenceAsThreeLetterCode = "";
+        for (int i = 0; i < sequence.length(); i++) {
+            sequenceAsThreeLetterCode += AminoAcids.getThreeLetterCodeByOneLetterCode(sequence.charAt(i));
+        }
+        return sequenceAsThreeLetterCode;
+    }
+
+    public String seq2ThreeLetterCodeOnDefaultOrgSeq(String sequence,Long rangeStart,Long rangeEnd) {
+
+        // example Pro12_Leu14 or Ile234
+
+        String sequenceAsThreeLetterCode = "";
+        Character startAA=sequence.charAt(0);
+        Character endAA=null;
+
+        sequenceAsThreeLetterCode += AminoAcids.getThreeLetterCodeByOneLetterCode(startAA);
+        sequenceAsThreeLetterCode+=rangeStart;
+        if(sequence.length()>1){
+            endAA=sequence.charAt(sequence.length()-1);
+            sequenceAsThreeLetterCode += Constants.ORG_SEQ_SEPERATOR+AminoAcids.getThreeLetterCodeByOneLetterCode(endAA)+rangeEnd;
+        }
+
         return sequenceAsThreeLetterCode;
     }
 
