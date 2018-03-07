@@ -29,6 +29,7 @@ public enum AminoAcids {
     ANY_CODON('X', "Xaa"),
     TYROSINE('Y', "Tyr"),
     GLUTAMINE_OR_GLUTAMIC_ACID('Z', "Glx"),
+    LEUCINE_OR_ISOLEUCINE('J',"Xle"),
     STOP_CODON('*', "*"),
     DELETION('.', "del");
 

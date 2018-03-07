@@ -13,7 +13,9 @@ import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.events.*;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.listener.ShortlabelGeneratorListener;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.manager.ShortlabelGeneratorManager;
+import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.AminoAcids;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.Constants;
+import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.PolyculeDataFeed;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.utils.ShortlabelGeneratorHelper;
 
 import java.util.Collection;
@@ -112,6 +114,7 @@ public class ShortlabelGenerator {
         String interactorType;
         boolean noMutationUpdate = false;
         Collection<Range> ranges;
+        PolyculeDataFeed polyculeDataFeed=null;
 
         IntactInteractor interactor = helper.getInteractorByFeatureEvidence(featureEvidence);
 
@@ -266,7 +269,14 @@ public class ShortlabelGenerator {
                     isDeletion = true;
                 }
 
-                newShortlabel += helper.seq2ThreeLetterCodeOnDefaultOrgSeq(orgSeq,rangeStart,rangeEnd);
+                polyculeDataFeed=helper.checkIfPolyculeAndReturnPDF(orgSeq,resSeq);
+                if(polyculeDataFeed.isSingleAAPolycule()){
+                    newShortlabel += helper.seq2ThreeLetterCodeOnDefaultOrgSeq(orgSeq.charAt(0)+"",rangeStart,rangeEnd);
+                }else {
+                    newShortlabel += helper.seq2ThreeLetterCodeOnDefaultOrgSeq(orgSeq,rangeStart,rangeEnd);
+                }
+
+
 
                 /*if (helper.isSingleAminoAcidChange(rangeStart, rangeEnd)) {
                     newShortlabel += helper.generateNonSequentialRange(rangeStart);
@@ -279,10 +289,12 @@ public class ShortlabelGenerator {
                     ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.DELETION);
                     manager.fireOnResSeqChangedEvent(event);
                 } else if (helper.resultingSeqIncreased(orgSeq, resSeq)) {
-                    newShortlabel+=Constants.INSERTION;
+                    if(!polyculeDataFeed.isPolycule()) {
+                        newShortlabel += Constants.INSERTION;
+                    }
                     ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.INCREASE);
                     manager.fireOnResSeqChangedEvent(event);
-                } else {
+                } else if(!polyculeDataFeed.isPolycule()){
                     if (!helper.isSingleAminoAcidChange(rangeStart, rangeEnd)) {
                        newShortlabel+=Constants.DEL_INS;
                     }
@@ -290,7 +302,11 @@ public class ShortlabelGenerator {
                             interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.STABLE);
                     manager.fireOnResSeqChangedEvent(event);
                 }
-                newShortlabel += helper.seq2ThreeLetterCodeOnDefaultResSeq(resSeq);
+                if(!polyculeDataFeed.isPolycule()) {
+                    newShortlabel += helper.seq2ThreeLetterCodeOnDefaultResSeq(resSeq);
+                }else{
+                    newShortlabel+="["+polyculeDataFeed.getRepeatUnit()+"]";
+                }
                 if(!noMutationUpdate) {
                     featureEvidence.setShortName(featureEvidence.getShortName() + newShortlabel + (index < experimentalRanges.length - 1 ? ";" : ""));
                 }

@@ -9,6 +9,10 @@ import uk.ac.ebi.intact.jami.model.extension.IntactFeatureEvidence;
 import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.AminoAcids;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.Constants;
+import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.PolyculeDataFeed;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Maximilian Koch (mkoch@ebi.ac.uk).
@@ -94,19 +98,19 @@ public class ShortlabelGeneratorHelper {
         return sequenceAsThreeLetterCode;
     }
 
-    public String seq2ThreeLetterCodeOnDefaultOrgSeq(String sequence,Long rangeStart,Long rangeEnd) {
+    public String seq2ThreeLetterCodeOnDefaultOrgSeq(String sequence, Long rangeStart, Long rangeEnd) {
 
         // example Pro12_Leu14 or Ile234
 
         String sequenceAsThreeLetterCode = "";
-        Character startAA=sequence.charAt(0);
-        Character endAA=null;
+        Character startAA = sequence.charAt(0);
+        Character endAA = null;
 
         sequenceAsThreeLetterCode += AminoAcids.getThreeLetterCodeByOneLetterCode(startAA);
-        sequenceAsThreeLetterCode+=rangeStart;
-        if(sequence.length()>1){
-            endAA=sequence.charAt(sequence.length()-1);
-            sequenceAsThreeLetterCode += Constants.ORG_SEQ_SEPERATOR+AminoAcids.getThreeLetterCodeByOneLetterCode(endAA)+rangeEnd;
+        sequenceAsThreeLetterCode += rangeStart;
+        if (sequence.length() > 1) {
+            endAA = sequence.charAt(sequence.length() - 1);
+            sequenceAsThreeLetterCode += Constants.ORG_SEQ_SEPERATOR + AminoAcids.getThreeLetterCodeByOneLetterCode(endAA) + rangeEnd;
         }
 
         return sequenceAsThreeLetterCode;
@@ -133,15 +137,15 @@ public class ShortlabelGeneratorHelper {
         return false;
     }
 
-    public boolean containsToManyDots(String resSeq){
-      return StringUtils.countMatches(resSeq, ".") > 3;
+    public boolean containsToManyDots(String resSeq) {
+        return StringUtils.countMatches(resSeq, ".") > 3;
     }
 
-    public void sortRanges(Range[] ranges, int startPos, int endPos){
+    public void sortRanges(Range[] ranges, int startPos, int endPos) {
         int startCourser = startPos;
         int endCourser = endPos;
 
-        Range pivotRange = ranges[endPos +(startPos - endPos)/2];
+        Range pivotRange = ranges[endPos + (startPos - endPos) / 2];
         while (startCourser <= endCourser) {
             while (ranges[startCourser].getStart().getStart() < pivotRange.getStart().getStart()) {
                 startCourser++;
@@ -155,10 +159,10 @@ public class ShortlabelGeneratorHelper {
                 endCourser--;
             }
         }
-        if (startPos < endCourser){
+        if (startPos < endCourser) {
             sortRanges(ranges, startPos, endCourser);
         }
-        if (startCourser < endPos){
+        if (startCourser < endPos) {
             sortRanges(ranges, startCourser, endPos);
         }
     }
@@ -167,5 +171,55 @@ public class ShortlabelGeneratorHelper {
         Range range = ranges[startCourser];
         ranges[startCourser] = ranges[endCourser];
         ranges[endCourser] = range;
+    }
+
+    public PolyculeDataFeed checkIfPolyculeAndReturnPDF(String oSequence, String rSequence) {
+
+        boolean isPolycule = false;
+        boolean isSingleAAPolycule = false;
+        boolean isMultipleAAPolycule = false;
+        int repeatUnit = 0;
+        PolyculeDataFeed polyculeDataFeed = new PolyculeDataFeed();
+        if (oSequence != null && rSequence != null) {
+            if (rSequence.length() > oSequence.length()) {
+                if (rSequence.contains(oSequence)) {
+                    String pattern = oSequence.charAt(0) + "{" + oSequence.length() + "}";
+                    Pattern r1 = Pattern.compile(pattern);
+
+                    Matcher m = r1.matcher(oSequence);
+                    boolean matched = m.matches();
+
+                    if (matched) {
+                        String resSeqPattern = oSequence.charAt(0) + "{" + rSequence.length() + "}";
+                        Pattern r2 = Pattern.compile(resSeqPattern);
+                        Matcher matcher = r2.matcher(rSequence);
+                        boolean isResSeqMatched = matcher.matches();
+                        isSingleAAPolycule = isResSeqMatched;
+                        repeatUnit = rSequence.length();
+                    } else {
+                        Double remainder = new Double(rSequence.length() % oSequence.length());
+                        if (remainder == 0d) {
+                            int factor = rSequence.length() / oSequence.length();
+                            String mAAPattern = "(" + oSequence + ")" + "{" + factor + "}";
+                            Pattern r3 = Pattern.compile(mAAPattern);
+
+                            Matcher matcher = r3.matcher(rSequence);
+                            boolean isResSeqMatched = matcher.matches();
+                            isMultipleAAPolycule = isResSeqMatched;
+                            repeatUnit = factor;
+                        }
+                    }
+                }
+            }
+        }
+        if (isSingleAAPolycule || isMultipleAAPolycule) {
+            isPolycule = true;
+        }
+        polyculeDataFeed.setMultipleAAPolycule(isMultipleAAPolycule);
+        polyculeDataFeed.setSingleAAPolycule(isSingleAAPolycule);
+        polyculeDataFeed.setPolycule(isPolycule);
+        polyculeDataFeed.setRepeatUnit(repeatUnit);
+
+        return polyculeDataFeed;
     }
 }
