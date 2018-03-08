@@ -27,7 +27,42 @@ public class ShortlabelGeneratorTest {
     public void ShortlabelGeneratorTest_1(){
         ShortlabelGenerator shortlabelGenerator = getShortlabelGenerator();
         shortlabelGenerator.addListener(new FeatureListener());
-          shortlabelGenerator.generateNewShortLabel("EBI-10921757");
+        /*polycules*/
+
+        // shortlabelGenerator.generateNewShortLabel("EBI-10921757");
+
+        /* Single amino acid change*/
+
+        //shortlabelGenerator.generateNewShortLabel("EBI-9095885");
+        //shortlabelGenerator.generateNewShortLabel("EBI-8524086");
+        //shortlabelGenerator.generateNewShortLabel("EBI-9825301");
+
+        /*Multiple amino acid change, non-sequential positions:*/
+
+        //shortlabelGenerator.generateNewShortLabel("EBI-9693147");
+        //shortlabelGenerator.generateNewShortLabel(("EBI-10889784"));
+        //shortlabelGenerator.generateNewShortLabel("EBI-15731927");
+
+        /*Multiple amino acid change, sequential positions:*/
+        //shortlabelGenerator.generateNewShortLabel("EBI-11314033");
+       // shortlabelGenerator.generateNewShortLabel("EBI-12590047");
+        //shortlabelGenerator.generateNewShortLabel("EBI-8839684");
+        //shortlabelGenerator.generateNewShortLabel("EBI-9846491");
+        //shortlabelGenerator.generateNewShortLabel("EBI-2891626"); //>>> To discuss with Pablo polycule?
+       shortlabelGenerator.generateNewShortLabel("EBI-15582875");//>>> Check
+
+        /*Deletion*/
+
+        //shortlabelGenerator.generateNewShortLabel("EBI-6898602");
+        //shortlabelGenerator.generateNewShortLabel("EBI-16008622");
+       // shortlabelGenerator.generateNewShortLabel("EBI-9085688");
+       // shortlabelGenerator.generateNewShortLabel("EBI-1641252");
+
+        /*Insertions*/
+
+        //shortlabelGenerator.generateNewShortLabel("EBI-2891626");
+        //shortlabelGenerator.generateNewShortLabel("EBI-11475055");
+
     }
 
     @Test
@@ -57,4 +92,30 @@ public class ShortlabelGeneratorTest {
 
 
     }
+
+    @Test
+    public void regexTest3(){
+        String oSequence="QLQQPQ";
+        String rSequence="QL..T.";
+        String pattern = "[\\.]";
+        Pattern r = Pattern.compile(pattern);
+
+        Matcher m=r.matcher(rSequence);
+      //  boolean matched=m.matches();
+        int count=0;
+        char[] rSequenceArray=rSequence.toCharArray();
+        if(true){
+            while(m.find()) {
+                count++;
+                System.out.println("Match number "+count);
+                System.out.println("start(): "+m.start());
+                Character character=oSequence.toCharArray()[m.start()];
+                rSequenceArray[m.start()]=character;
+            }
+        }
+        String fabricatedRSequence=new String(rSequenceArray);
+        boolean deletionInsertion=!fabricatedRSequence.equals(oSequence);
+    }
+
+
 }

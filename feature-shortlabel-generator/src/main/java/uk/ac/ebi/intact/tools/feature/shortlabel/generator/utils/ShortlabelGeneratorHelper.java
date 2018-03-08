@@ -9,7 +9,7 @@ import uk.ac.ebi.intact.jami.model.extension.IntactFeatureEvidence;
 import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.AminoAcids;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.Constants;
-import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.PolyculeDataFeed;
+import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.PolyQDataFeed;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,6 +37,50 @@ public class ShortlabelGeneratorHelper {
 
     public boolean resultingSeqIncreased(String originalSequence, String resultingSequence) {
         return originalSequence.length() < resultingSequence.length();
+    }
+
+    public boolean isStable(String originalSequence, String resultingSequence) {
+        return originalSequence.length() == resultingSequence.length();
+    }
+
+    public boolean isItDelInsCase(String oSequence,String rSequence){
+        boolean deletionInsertion=false;
+        if(isStable(oSequence, rSequence)) {
+            deletionInsertion=true;
+
+            /*Below is a perfectly running code for the case when you want to determine non dots are same or different from original sequence*/
+
+            /*String pattern = "[\\.]";
+            Pattern r = Pattern.compile(pattern);
+
+            Matcher m = r.matcher(rSequence);
+            char[] rSequenceArray = rSequence.toCharArray();
+            while (m.find()) {
+                Character character = oSequence.toCharArray()[m.start()];
+                rSequenceArray[m.start()] = character;
+            }
+
+            String fabricatedRSequence = new String(rSequenceArray);
+            if (!fabricatedRSequence.equals(oSequence)) {
+                deletionInsertion = true;
+            }*/
+        }else if(resultingSeqIncreased(oSequence, rSequence)){
+            if(rSequence.indexOf(oSequence)!=0){
+                deletionInsertion=true;
+            }
+        }
+
+        return deletionInsertion;
+    }
+
+    public boolean isInsertionCase(String oSequence,String rSequence){
+        boolean insertionCase=false;
+        if(resultingSeqIncreased(oSequence, rSequence)){
+            if(rSequence.indexOf(oSequence)==0){
+                insertionCase=true;
+            }
+        }
+        return insertionCase;
     }
 
     public String generateNonSequentialRange(Long startingPosition) {
@@ -93,7 +137,10 @@ public class ShortlabelGeneratorHelper {
 
         String sequenceAsThreeLetterCode = "";
         for (int i = 0; i < sequence.length(); i++) {
-            sequenceAsThreeLetterCode += AminoAcids.getThreeLetterCodeByOneLetterCode(sequence.charAt(i));
+            char seqChar=sequence.charAt(i);
+            if(seqChar!='.') {
+                sequenceAsThreeLetterCode += AminoAcids.getThreeLetterCodeByOneLetterCode(sequence.charAt(i));
+            }
         }
         return sequenceAsThreeLetterCode;
     }
@@ -173,13 +220,13 @@ public class ShortlabelGeneratorHelper {
         ranges[endCourser] = range;
     }
 
-    public PolyculeDataFeed checkIfPolyculeAndReturnPDF(String oSequence, String rSequence) {
+    public PolyQDataFeed checkIfPoyQAndReturnPDF(String oSequence, String rSequence) {
 
         boolean isPolycule = false;
         boolean isSingleAAPolycule = false;
         boolean isMultipleAAPolycule = false;
         int repeatUnit = 0;
-        PolyculeDataFeed polyculeDataFeed = new PolyculeDataFeed();
+        PolyQDataFeed polyQDataFeed = new PolyQDataFeed();
         if (oSequence != null && rSequence != null) {
             if (rSequence.length() > oSequence.length()) {
                 if (rSequence.contains(oSequence)) {
@@ -215,11 +262,11 @@ public class ShortlabelGeneratorHelper {
         if (isSingleAAPolycule || isMultipleAAPolycule) {
             isPolycule = true;
         }
-        polyculeDataFeed.setMultipleAAPolycule(isMultipleAAPolycule);
-        polyculeDataFeed.setSingleAAPolycule(isSingleAAPolycule);
-        polyculeDataFeed.setPolycule(isPolycule);
-        polyculeDataFeed.setRepeatUnit(repeatUnit);
+        polyQDataFeed.setMultipleAAPolycule(isMultipleAAPolycule);
+        polyQDataFeed.setSingleAAPolycule(isSingleAAPolycule);
+        polyQDataFeed.setPolycule(isPolycule);
+        polyQDataFeed.setRepeatUnit(repeatUnit);
 
-        return polyculeDataFeed;
+        return polyQDataFeed;
     }
 }

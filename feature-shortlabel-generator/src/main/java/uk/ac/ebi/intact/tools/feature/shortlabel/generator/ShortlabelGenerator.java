@@ -13,9 +13,8 @@ import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.events.*;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.listener.ShortlabelGeneratorListener;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.manager.ShortlabelGeneratorManager;
-import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.AminoAcids;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.Constants;
-import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.PolyculeDataFeed;
+import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.PolyQDataFeed;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.utils.ShortlabelGeneratorHelper;
 
 import java.util.Collection;
@@ -114,7 +113,7 @@ public class ShortlabelGenerator {
         String interactorType;
         boolean noMutationUpdate = false;
         Collection<Range> ranges;
-        PolyculeDataFeed polyculeDataFeed=null;
+        PolyQDataFeed polyQDataFeed = null;
 
         IntactInteractor interactor = helper.getInteractorByFeatureEvidence(featureEvidence);
 
@@ -178,103 +177,109 @@ public class ShortlabelGenerator {
                 noMutationUpdate = true;
             }
         }
-        if(!noMutationUpdate) {
+        if (!noMutationUpdate) {
             featureEvidence.setShortName(Constants.PROTEIN_PREFIX);
         }
-            if (featureEvidence.getRanges() == null || featureEvidence.getRanges().size() == 0) {
-                RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, null, RangeErrorEvent.ErrorType.RANGE_NULL);
+        if (featureEvidence.getRanges() == null || featureEvidence.getRanges().size() == 0) {
+            RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, null, RangeErrorEvent.ErrorType.RANGE_NULL);
+            manager.fireOnRangeErrorEvent(event);
+            return;
+        }
+
+        ranges = featureEvidence.getRanges();
+        ExperimentalRange[] experimentalRanges = ranges.toArray(new ExperimentalRange[ranges.size()]);
+
+        if (experimentalRanges.length > 1) {
+            featureEvidence.setShortName(featureEvidence.getShortName() + "[");
+        }
+        helper.sortRanges(experimentalRanges, 0, experimentalRanges.length - 1);
+        for (int index = 0; index <= experimentalRanges.length - 1; index++) {
+            String newShortlabel = "";
+            long rangeStart;
+            long rangeEnd;
+            String orgSeq;
+            String resSeq;
+            String calculatedOrgSeq;
+            boolean isDeletion = false;
+            boolean isDeletionInsertion = false;
+            boolean isInsertionCase = false;
+            String rangeAc = experimentalRanges[index].getAc();
+
+            if (experimentalRanges[index].getStart().getStart() == 0) {
+                RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.START_POS_ZERO);
+                manager.fireOnRangeErrorEvent(event);
+                return;
+            }
+            if (experimentalRanges[index].getStart().isPositionUndetermined()) {
+                RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.START_POS_UNDETERMINED);
+                manager.fireOnRangeErrorEvent(event);
+                return;
+            }
+            if (experimentalRanges[index].getResultingSequence().getOriginalSequence() == null) {
+                RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.ORG_SEQ_NULL);
+                manager.fireOnRangeErrorEvent(event);
+                return;
+            }
+            if (experimentalRanges[index].getResultingSequence().getNewSequence() == null) {
+                RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.RES_SEQ_NULL);
                 manager.fireOnRangeErrorEvent(event);
                 return;
             }
 
-            ranges = featureEvidence.getRanges();
-            ExperimentalRange[] experimentalRanges = ranges.toArray(new ExperimentalRange[ranges.size()]);
+            rangeStart = experimentalRanges[index].getStart().getStart();
+            rangeEnd = experimentalRanges[index].getEnd().getEnd();
+            orgSeq = experimentalRanges[index].getResultingSequence().getOriginalSequence();
+            resSeq = experimentalRanges[index].getResultingSequence().getNewSequence();
+            calculatedOrgSeq = helper.generateOrgSeq(interactorSeq, rangeStart, rangeEnd);
 
-        if (experimentalRanges.length>1){
-            featureEvidence.setShortName(featureEvidence.getShortName()+"[");
-        }
-            helper.sortRanges(experimentalRanges, 0, experimentalRanges.length - 1);
-            for (int index = 0; index <= experimentalRanges.length - 1; index++) {
-                String newShortlabel = "";
-                long rangeStart;
-                long rangeEnd;
-                String orgSeq;
-                String resSeq;
-                String calculatedOrgSeq;
-                boolean isDeletion = false;
+            if (calculatedOrgSeq == null) {
+                SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.UNABLE_CALCULATE_ORG_SEQ);
+                manager.fireOnSeqErrorEvent(event);
+                return;
+            }
+            if (helper.orgSeqWrong(orgSeq, calculatedOrgSeq)) {
+                String message = "Original sequence does not match interactor sequence. Is " + orgSeq + " should be " + calculatedOrgSeq + " Range: (" + rangeStart + "-" + rangeEnd + ")";
+                SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.ORG_SEQ_WRONG, message);
+                manager.fireOnSeqErrorEvent(event);
+                return;
+            }
+            if (helper.containsLowerCaseLetters(resSeq)) {
+                SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_CONTAINS_LOWER_CASE);
+                manager.fireOnSeqErrorEvent(event);
+                return;
+            }
 
-                String rangeAc = experimentalRanges[index].getAc();
-
-                if (experimentalRanges[index].getStart().getStart() == 0) {
-                    RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.START_POS_ZERO);
-                    manager.fireOnRangeErrorEvent(event);
-                    return;
-                }
-                if (experimentalRanges[index].getStart().isPositionUndetermined()) {
-                    RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.START_POS_UNDETERMINED);
-                    manager.fireOnRangeErrorEvent(event);
-                    return;
-                }
-                if (experimentalRanges[index].getResultingSequence().getOriginalSequence() == null) {
-                    RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.ORG_SEQ_NULL);
-                    manager.fireOnRangeErrorEvent(event);
-                    return;
-                }
-                if (experimentalRanges[index].getResultingSequence().getNewSequence() == null) {
-                    RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, rangeAc, RangeErrorEvent.ErrorType.RES_SEQ_NULL);
-                    manager.fireOnRangeErrorEvent(event);
-                    return;
-                }
-
-                rangeStart = experimentalRanges[index].getStart().getStart();
-                rangeEnd = experimentalRanges[index].getEnd().getEnd();
-                orgSeq = experimentalRanges[index].getResultingSequence().getOriginalSequence();
-                resSeq = experimentalRanges[index].getResultingSequence().getNewSequence();
-                calculatedOrgSeq = helper.generateOrgSeq(interactorSeq, rangeStart, rangeEnd);
-
-                if (calculatedOrgSeq == null) {
-                    SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.UNABLE_CALCULATE_ORG_SEQ);
+            if (helper.resultingSeqDescreased(orgSeq, resSeq)) {
+                SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_SMALLER_ORG_SEQ);
+                manager.fireOnSeqErrorEvent(event);
+                return;
+            }
+            if (helper.isInsertionCase(orgSeq, resSeq)) {
+                  isInsertionCase = true;
+            }else if (helper.isItDelInsCase(orgSeq, resSeq)) {
+                isDeletionInsertion = true;
+            } else if (helper.containsDot(resSeq)) {
+                if (helper.deletionOnWrongPlace(resSeq)) {
+                    SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_WITH_WRONG_DELETION);
                     manager.fireOnSeqErrorEvent(event);
                     return;
                 }
-                if (helper.orgSeqWrong(orgSeq, calculatedOrgSeq)) {
-                    String message = "Original sequence does not match interactor sequence. Is " + orgSeq + " should be " + calculatedOrgSeq + " Range: (" + rangeStart + "-" + rangeEnd + ")";
-                    SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.ORG_SEQ_WRONG, message);
-                    manager.fireOnSeqErrorEvent(event);
-                    return;
-                }
-                if (helper.containsLowerCaseLetters(resSeq)) {
-                    SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_CONTAINS_LOWER_CASE);
+                if (helper.containsToManyDots(resSeq)) {
+                    SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_TO_MANY_DOTS);
                     manager.fireOnSeqErrorEvent(event);
                     return;
                 }
 
-                if (helper.resultingSeqDescreased(orgSeq, resSeq)) {
-                    SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_SMALLER_ORG_SEQ);
-                    manager.fireOnSeqErrorEvent(event);
-                    return;
-                }
-
-                if (helper.containsDot(resSeq)) {
-                    if (helper.deletionOnWrongPlace(resSeq)) {
-                        SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_WITH_WRONG_DELETION);
-                        manager.fireOnSeqErrorEvent(event);
-                        return;
-                    }
-                    if (helper.containsToManyDots(resSeq)) {
-                        SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_TO_MANY_DOTS);
-                        manager.fireOnSeqErrorEvent(event);
-                        return;
-                    }
                     isDeletion = true;
-                }
 
-                polyculeDataFeed=helper.checkIfPolyculeAndReturnPDF(orgSeq,resSeq);
-                if(polyculeDataFeed.isSingleAAPolycule()){
-                    newShortlabel += helper.seq2ThreeLetterCodeOnDefaultOrgSeq(orgSeq.charAt(0)+"",rangeStart,rangeEnd);
-                }else {
-                    newShortlabel += helper.seq2ThreeLetterCodeOnDefaultOrgSeq(orgSeq,rangeStart,rangeEnd);
-                }
+            }
+
+            polyQDataFeed = helper.checkIfPoyQAndReturnPDF(orgSeq, resSeq);
+            if (polyQDataFeed.isSingleAAPolyQ()) {
+                newShortlabel += helper.seq2ThreeLetterCodeOnDefaultOrgSeq(orgSeq.charAt(0) + "", rangeStart, rangeEnd);
+            } else {
+                newShortlabel += helper.seq2ThreeLetterCodeOnDefaultOrgSeq(orgSeq, rangeStart, rangeEnd);
+            }
 
 
 
@@ -283,36 +288,34 @@ public class ShortlabelGenerator {
                 } else {
                     newShortlabel += helper.generateSequentialRange(rangeStart, rangeEnd);
                 }*/
-
-                if (isDeletion) {
-                    newShortlabel+=Constants.DELETION;
-                    ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.DELETION);
-                    manager.fireOnResSeqChangedEvent(event);
-                } else if (helper.resultingSeqIncreased(orgSeq, resSeq)) {
-                    if(!polyculeDataFeed.isPolycule()) {
-                        newShortlabel += Constants.INSERTION;
-                    }
-                    ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.INCREASE);
-                    manager.fireOnResSeqChangedEvent(event);
-                } else if(!polyculeDataFeed.isPolycule()){
-                    if (!helper.isSingleAminoAcidChange(rangeStart, rangeEnd)) {
-                       newShortlabel+=Constants.DEL_INS;
-                    }
-                    ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc,
-                            interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.STABLE);
-                    manager.fireOnResSeqChangedEvent(event);
+            if (isDeletionInsertion) {
+                newShortlabel += Constants.DEL_INS;
+                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.DELETION_INSERTION);
+                manager.fireOnResSeqChangedEvent(event);
+            } else if (isDeletion) {
+                newShortlabel += Constants.DELETION;
+                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.DELETION);
+                manager.fireOnResSeqChangedEvent(event);
+            } else if (helper.resultingSeqIncreased(orgSeq, resSeq)) {
+                if (!polyQDataFeed.isPolyQ()&&isInsertionCase) {
+                    newShortlabel += Constants.INSERTION;
                 }
-                if(!polyculeDataFeed.isPolycule()) {
+                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.INCREASE);
+                manager.fireOnResSeqChangedEvent(event);
+            }
+            if (!isDeletion) {
+                if (!polyQDataFeed.isPolyQ()) {
                     newShortlabel += helper.seq2ThreeLetterCodeOnDefaultResSeq(resSeq);
-                }else{
-                    newShortlabel+="["+polyculeDataFeed.getRepeatUnit()+"]";
-                }
-                if(!noMutationUpdate) {
-                    featureEvidence.setShortName(featureEvidence.getShortName() + newShortlabel + (index < experimentalRanges.length - 1 ? ";" : ""));
+                } else {
+                    newShortlabel += "[" + polyQDataFeed.getRepeatUnit() + "]";
                 }
             }
-        if (experimentalRanges.length>1){
-            featureEvidence.setShortName(featureEvidence.getShortName()+"]");
+            if (!noMutationUpdate) {
+                featureEvidence.setShortName(featureEvidence.getShortName() + newShortlabel + (index < experimentalRanges.length - 1 ? ";" : ""));
+            }
+        }
+        if (experimentalRanges.length > 1) {
+            featureEvidence.setShortName(featureEvidence.getShortName() + "]");
         }
 
         if (noMutationUpdate || orgShortlabel.equals(featureEvidence.getShortName())) {
