@@ -85,7 +85,7 @@
     </bean>
 
     <bean id="intactJamiConfiguration" class="uk.ac.ebi.intact.jami.context.IntactConfiguration" scope="prototype">
-        <property name="acPrefix" value="${ac.prefix}"/>
+        <property name="acPrefix" value="${jami.ac.prefix}"/>
         <property name="defaultInstitution" ref="sourceIntact"/>
     </bean>
 
