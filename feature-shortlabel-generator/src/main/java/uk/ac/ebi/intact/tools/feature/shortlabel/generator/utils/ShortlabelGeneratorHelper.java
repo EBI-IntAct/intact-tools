@@ -244,9 +244,11 @@ public class ShortlabelGeneratorHelper {
         boolean isMultipleAAPolycule = false;
         int repeatUnit = 0;
         PolyQDataFeed polyQDataFeed = new PolyQDataFeed();
-        if (oSequence != null && rSequence != null) {
-            if (rSequence.length() > oSequence.length()) {
-                if (rSequence.contains(oSequence)) {
+        String removedNewLinesRSeq=rSequence.replaceAll("\\n","");
+        removedNewLinesRSeq=removedNewLinesRSeq.replaceAll("\\r","");
+        if (oSequence != null && removedNewLinesRSeq != null) {
+            if (removedNewLinesRSeq.length() > oSequence.length()) {
+                if (removedNewLinesRSeq.contains(oSequence)) {
                     String pattern = oSequence.charAt(0) + "{" + oSequence.length() + "}";
                     Pattern r1 = Pattern.compile(pattern);
 
@@ -254,20 +256,20 @@ public class ShortlabelGeneratorHelper {
                     boolean matched = m.matches();
 
                     if (matched) {
-                        String resSeqPattern = oSequence.charAt(0) + "{" + rSequence.length() + "}";
+                        String resSeqPattern = oSequence.charAt(0) + "{" + removedNewLinesRSeq.length() + "}";
                         Pattern r2 = Pattern.compile(resSeqPattern);
-                        Matcher matcher = r2.matcher(rSequence);
+                        Matcher matcher = r2.matcher(removedNewLinesRSeq);
                         boolean isResSeqMatched = matcher.matches();
                         isSingleAAPolycule = isResSeqMatched;
-                        repeatUnit = rSequence.length();
+                        repeatUnit = removedNewLinesRSeq.length();
                     } else {
-                        Double remainder = new Double(rSequence.length() % oSequence.length());
+                        Double remainder = new Double(removedNewLinesRSeq.length() % oSequence.length());
                         if (remainder == 0d) {
-                            int factor = rSequence.length() / oSequence.length();
+                            int factor = removedNewLinesRSeq.length() / oSequence.length();
                             String mAAPattern = "(" + oSequence + ")" + "{" + factor + "}";
                             Pattern r3 = Pattern.compile(mAAPattern);
 
-                            Matcher matcher = r3.matcher(rSequence);
+                            Matcher matcher = r3.matcher(removedNewLinesRSeq);
                             boolean isResSeqMatched = matcher.matches();
                             isMultipleAAPolycule = isResSeqMatched;
                             repeatUnit = factor;

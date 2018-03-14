@@ -30,6 +30,7 @@ public class ShortlabelGeneratorTest {
         /*polycules*/
 
         // shortlabelGenerator.generateNewShortLabel("EBI-10921757");
+         shortlabelGenerator.generateNewShortLabel("EBI-14690097");
 
         /* Single amino acid change*/
 
