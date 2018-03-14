@@ -27,8 +27,13 @@ public class ShortlabelGeneratorHelper {
         return !resultingSequence.equals(resultingSequence.toUpperCase());
     }
 
-    public boolean isSingleAminoAcidChange(Long startPosition, Long endPosition) {
+    public boolean isSingleChange(Long startPosition, Long endPosition) {
         return startPosition.equals(endPosition);
+    }
+
+    public boolean isSingleAAChange(String originalSequence, String resultingSequence,Long startPosition, Long endPosition){
+        return (isSingleChange(startPosition, endPosition)
+                &&resultingSequence.length()>0&&!resultingSequence.equals("."));
     }
 
     public boolean resultingSeqDescreased(String originalSequence, String resultingSequence) {
@@ -43,10 +48,20 @@ public class ShortlabelGeneratorHelper {
         return originalSequence.length() == resultingSequence.length();
     }
 
-    public boolean isItDelInsCase(String oSequence,String rSequence){
-        boolean deletionInsertion=false;
-        if(isStable(oSequence, rSequence)) {
-            deletionInsertion=true;
+    public boolean isItDelInsCase(String oSequence, String rSequence) {
+        boolean deletionInsertion = false;
+        if (isStable(oSequence, rSequence)) {
+
+            //check if it contains only dots
+            String pattern = "\\." + "{" + rSequence.length() + "}";
+            Pattern r1 = Pattern.compile(pattern);
+
+            Matcher m = r1.matcher(rSequence);
+            boolean matched = m.matches();
+
+            if (!matched) {
+                deletionInsertion = true;
+            }
 
             /*Below is a perfectly running code for the case when you want to determine non dots are same or different from original sequence*/
 
@@ -64,20 +79,22 @@ public class ShortlabelGeneratorHelper {
             if (!fabricatedRSequence.equals(oSequence)) {
                 deletionInsertion = true;
             }*/
-        }else if(resultingSeqIncreased(oSequence, rSequence)){
-            if(rSequence.indexOf(oSequence)!=0){
-                deletionInsertion=true;
+        } else if (resultingSeqIncreased(oSequence, rSequence)) {
+            if (rSequence.indexOf(oSequence) != 0) {
+                deletionInsertion = true;
             }
+        } else if (rSequence.length() > 0 && resultingSeqDescreased(oSequence, rSequence)) {
+            deletionInsertion = true;
         }
 
         return deletionInsertion;
     }
 
-    public boolean isInsertionCase(String oSequence,String rSequence){
-        boolean insertionCase=false;
-        if(resultingSeqIncreased(oSequence, rSequence)){
-            if(rSequence.indexOf(oSequence)==0){
-                insertionCase=true;
+    public boolean isInsertionCase(String oSequence, String rSequence) {
+        boolean insertionCase = false;
+        if (resultingSeqIncreased(oSequence, rSequence)) {
+            if (rSequence.indexOf(oSequence) == 0) {
+                insertionCase = true;
             }
         }
         return insertionCase;
@@ -137,8 +154,8 @@ public class ShortlabelGeneratorHelper {
 
         String sequenceAsThreeLetterCode = "";
         for (int i = 0; i < sequence.length(); i++) {
-            char seqChar=sequence.charAt(i);
-            if(seqChar!='.') {
+            char seqChar = sequence.charAt(i);
+            if (seqChar != '.') {
                 sequenceAsThreeLetterCode += AminoAcids.getThreeLetterCodeByOneLetterCode(sequence.charAt(i));
             }
         }
@@ -262,9 +279,9 @@ public class ShortlabelGeneratorHelper {
         if (isSingleAAPolycule || isMultipleAAPolycule) {
             isPolycule = true;
         }
-        polyQDataFeed.setMultipleAAPolycule(isMultipleAAPolycule);
-        polyQDataFeed.setSingleAAPolycule(isSingleAAPolycule);
-        polyQDataFeed.setPolycule(isPolycule);
+        polyQDataFeed.setMultipleAAPolyQ(isMultipleAAPolycule);
+        polyQDataFeed.setSingleAAPolyQ(isSingleAAPolycule);
+        polyQDataFeed.setPolyQ(isPolycule);
         polyQDataFeed.setRepeatUnit(repeatUnit);
 
         return polyQDataFeed;

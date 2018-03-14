@@ -203,6 +203,8 @@ public class ShortlabelGenerator {
             boolean isDeletion = false;
             boolean isDeletionInsertion = false;
             boolean isInsertionCase = false;
+            boolean isSingleAAchange=false;
+            boolean isPolyq = false;
             String rangeAc = experimentalRanges[index].getAc();
 
             if (experimentalRanges[index].getStart().getStart() == 0) {
@@ -254,27 +256,38 @@ public class ShortlabelGenerator {
                 manager.fireOnSeqErrorEvent(event);
                 return;
             }
-            if (helper.isInsertionCase(orgSeq, resSeq)) {
-                  isInsertionCase = true;
-            }else if (helper.isItDelInsCase(orgSeq, resSeq)) {
+
+            /*Dots will be removed in future - Currently the code handles both cases*/
+
+            polyQDataFeed = helper.checkIfPoyQAndReturnPDF(orgSeq, resSeq);
+            if (polyQDataFeed.isPolyQ()) {
+                isPolyq = true;
+            } else if(helper.isSingleAAChange(orgSeq,resSeq,rangeStart,rangeEnd)){
+                isSingleAAchange=true;
+            }else if (helper.isInsertionCase(orgSeq, resSeq)) {
+                isInsertionCase = true;
+            } else if (helper.isItDelInsCase(orgSeq, resSeq)) {
                 isDeletionInsertion = true;
-            } else if (helper.containsDot(resSeq)) {
-                if (helper.deletionOnWrongPlace(resSeq)) {
-                    SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_WITH_WRONG_DELETION);
-                    manager.fireOnSeqErrorEvent(event);
-                    return;
-                }
-                if (helper.containsToManyDots(resSeq)) {
-                    SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_TO_MANY_DOTS);
-                    manager.fireOnSeqErrorEvent(event);
-                    return;
+            } else if (resSeq.length() == 0 || helper.containsDot(resSeq)) {
+
+                if (resSeq.length() != 0) {
+                    if (helper.deletionOnWrongPlace(resSeq)) {
+                        SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_WITH_WRONG_DELETION);
+                        manager.fireOnSeqErrorEvent(event);
+                        return;
+                    }
+                    if (helper.containsToManyDots(resSeq)) {
+                        SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.RES_SEQ_TO_MANY_DOTS);
+                        manager.fireOnSeqErrorEvent(event);
+                        return;
+                    }
                 }
 
-                    isDeletion = true;
+                isDeletion = true;
 
             }
 
-            polyQDataFeed = helper.checkIfPoyQAndReturnPDF(orgSeq, resSeq);
+
             if (polyQDataFeed.isSingleAAPolyQ()) {
                 newShortlabel += helper.seq2ThreeLetterCodeOnDefaultOrgSeq(orgSeq.charAt(0) + "", rangeStart, rangeEnd);
             } else {
@@ -297,14 +310,14 @@ public class ShortlabelGenerator {
                 ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.DELETION);
                 manager.fireOnResSeqChangedEvent(event);
             } else if (helper.resultingSeqIncreased(orgSeq, resSeq)) {
-                if (!polyQDataFeed.isPolyQ()&&isInsertionCase) {
+                if (isInsertionCase) {
                     newShortlabel += Constants.INSERTION;
                 }
                 ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.INCREASE);
                 manager.fireOnResSeqChangedEvent(event);
             }
             if (!isDeletion) {
-                if (!polyQDataFeed.isPolyQ()) {
+                if (!isPolyq) {
                     newShortlabel += helper.seq2ThreeLetterCodeOnDefaultResSeq(resSeq);
                 } else {
                     newShortlabel += "[" + polyQDataFeed.getRepeatUnit() + "]";

@@ -1,9 +1,9 @@
 package uk.ac.ebi.intact.tools.feature.shortlabel.generator;
 
-import uk.ac.ebi.intact.tools.feature.shortlabel.generator.impl.FeatureListener;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import uk.ac.ebi.intact.tools.feature.shortlabel.generator.impl.FeatureListener;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,13 +18,13 @@ public class ShortlabelGeneratorTest {
      * You'll see which event's are triggered during the shortlabel generation.
      */
 
-    private ShortlabelGenerator getShortlabelGenerator(){
+    private ShortlabelGenerator getShortlabelGenerator() {
         ApplicationContext context = new ClassPathXmlApplicationContext("META-INF/shortlabel-generator-config.xml");
         return context.getBean(ShortlabelGenerator.class);
     }
-    
+
     @Test
-    public void ShortlabelGeneratorTest_1(){
+    public void ShortlabelGeneratorTest_1() {
         ShortlabelGenerator shortlabelGenerator = getShortlabelGenerator();
         shortlabelGenerator.addListener(new FeatureListener());
         /*polycules*/
@@ -44,19 +44,20 @@ public class ShortlabelGeneratorTest {
         //shortlabelGenerator.generateNewShortLabel("EBI-15731927");
 
         /*Multiple amino acid change, sequential positions:*/
+        //shortlabelGenerator.generateNewShortLabel("EBI-11178974");//? single AA change?
         //shortlabelGenerator.generateNewShortLabel("EBI-11314033");
-       // shortlabelGenerator.generateNewShortLabel("EBI-12590047");
+        //shortlabelGenerator.generateNewShortLabel("EBI-12590047");
         //shortlabelGenerator.generateNewShortLabel("EBI-8839684");
         //shortlabelGenerator.generateNewShortLabel("EBI-9846491");
-        //shortlabelGenerator.generateNewShortLabel("EBI-2891626"); //>>> To discuss with Pablo polycule?
-       shortlabelGenerator.generateNewShortLabel("EBI-15582875");//>>> Check
+        //shortlabelGenerator.generateNewShortLabel("EBI-2891626");
+        //shortlabelGenerator.generateNewShortLabel("EBI-15582875");
 
         /*Deletion*/
 
         //shortlabelGenerator.generateNewShortLabel("EBI-6898602");
         //shortlabelGenerator.generateNewShortLabel("EBI-16008622");
-       // shortlabelGenerator.generateNewShortLabel("EBI-9085688");
-       // shortlabelGenerator.generateNewShortLabel("EBI-1641252");
+        //shortlabelGenerator.generateNewShortLabel("EBI-9085688");
+        //shortlabelGenerator.generateNewShortLabel("EBI-1641252");
 
         /*Insertions*/
 
@@ -66,27 +67,27 @@ public class ShortlabelGeneratorTest {
     }
 
     @Test
-    public void regexTest(){
-        String oSequence="QLQQ";
-        String pattern = oSequence.charAt(0)+"{"+oSequence.length()+"}";
+    public void regexTest() {
+        String oSequence = "QLQQ";
+        String pattern = oSequence.charAt(0) + "{" + oSequence.length() + "}";
         Pattern r = Pattern.compile(pattern);
 
-        Matcher m=r.matcher(oSequence);
-        boolean matched=m.matches();
+        Matcher m = r.matcher(oSequence);
+        boolean matched = m.matches();
     }
 
     @Test
-    public void regexTest2(){
-        String oSequence="QLQQ";
-        String rSequence="QLQQQLQQQLPQQLQQ";
-        Double remainder=new Double(rSequence.length()%oSequence.length());
-        if(remainder==0d){
-            int factor = rSequence.length()/oSequence.length();
-            String pattern = "("+oSequence+")"+"{"+factor+"}";
+    public void regexTest2() {
+        String oSequence = "QLQQ";
+        String rSequence = "QLQQQLQQQLPQQLQQ";
+        Double remainder = new Double(rSequence.length() % oSequence.length());
+        if (remainder == 0d) {
+            int factor = rSequence.length() / oSequence.length();
+            String pattern = "(" + oSequence + ")" + "{" + factor + "}";
             Pattern r = Pattern.compile(pattern);
 
-            Matcher m=r.matcher(rSequence);
-            boolean matched=m.matches();
+            Matcher m = r.matcher(rSequence);
+            boolean matched = m.matches();
             System.out.println(matched);
         }
 
@@ -94,27 +95,27 @@ public class ShortlabelGeneratorTest {
     }
 
     @Test
-    public void regexTest3(){
-        String oSequence="QLQQPQ";
-        String rSequence="QL..T.";
+    public void regexTest3() {
+        String oSequence = "QLQQPQ";
+        String rSequence = "QL..T.";
         String pattern = "[\\.]";
         Pattern r = Pattern.compile(pattern);
 
-        Matcher m=r.matcher(rSequence);
-      //  boolean matched=m.matches();
-        int count=0;
-        char[] rSequenceArray=rSequence.toCharArray();
-        if(true){
-            while(m.find()) {
+        Matcher m = r.matcher(rSequence);
+        //  boolean matched=m.matches();
+        int count = 0;
+        char[] rSequenceArray = rSequence.toCharArray();
+        if (true) {
+            while (m.find()) {
                 count++;
-                System.out.println("Match number "+count);
-                System.out.println("start(): "+m.start());
-                Character character=oSequence.toCharArray()[m.start()];
-                rSequenceArray[m.start()]=character;
+                System.out.println("Match number " + count);
+                System.out.println("start(): " + m.start());
+                Character character = oSequence.toCharArray()[m.start()];
+                rSequenceArray[m.start()] = character;
             }
         }
-        String fabricatedRSequence=new String(rSequenceArray);
-        boolean deletionInsertion=!fabricatedRSequence.equals(oSequence);
+        String fabricatedRSequence = new String(rSequenceArray);
+        boolean deletionInsertion = !fabricatedRSequence.equals(oSequence);
     }
 
 
