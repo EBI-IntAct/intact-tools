@@ -30,7 +30,7 @@ public class ShortlabelGeneratorTest {
         /*polycules*/
 
         // shortlabelGenerator.generateNewShortLabel("EBI-10921757");
-         shortlabelGenerator.generateNewShortLabel("EBI-14690097");
+        // shortlabelGenerator.generateNewShortLabel("EBI-14690097");
 
         /* Single amino acid change*/
 
@@ -52,6 +52,13 @@ public class ShortlabelGeneratorTest {
         //shortlabelGenerator.generateNewShortLabel("EBI-9846491");
         //shortlabelGenerator.generateNewShortLabel("EBI-2891626");
         //shortlabelGenerator.generateNewShortLabel("EBI-15582875");
+
+        //Second round
+
+        //shortlabelGenerator.generateNewShortLabel("EBI-12687520");
+        //shortlabelGenerator.generateNewShortLabel("EBI-11302770");
+       // shortlabelGenerator.generateNewShortLabel("EBI-977116");
+        shortlabelGenerator.generateNewShortLabel("EBI-12687523");
 
         /*Deletion*/
 

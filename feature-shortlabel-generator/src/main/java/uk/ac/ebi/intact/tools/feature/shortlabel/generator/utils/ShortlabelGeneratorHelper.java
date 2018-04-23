@@ -33,7 +33,7 @@ public class ShortlabelGeneratorHelper {
 
     public boolean isSingleAAChange(String originalSequence, String resultingSequence,Long startPosition, Long endPosition){
         return (isSingleChange(startPosition, endPosition)
-                &&resultingSequence.length()>0&&!resultingSequence.equals("."));
+                &&resultingSequence.length()==1&&!resultingSequence.equals("."));
     }
 
     public boolean resultingSeqDescreased(String originalSequence, String resultingSequence) {
