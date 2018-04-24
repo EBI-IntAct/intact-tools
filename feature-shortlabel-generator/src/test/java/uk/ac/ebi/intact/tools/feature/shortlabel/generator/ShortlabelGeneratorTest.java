@@ -34,19 +34,19 @@ public class ShortlabelGeneratorTest {
 
         /* Single amino acid change*/
 
-        //shortlabelGenerator.generateNewShortLabel("EBI-9095885");
+        // shortlabelGenerator.generateNewShortLabel("EBI-9095885");
         //shortlabelGenerator.generateNewShortLabel("EBI-8524086");
         //shortlabelGenerator.generateNewShortLabel("EBI-9825301");
 
         /*Multiple amino acid change, non-sequential positions:*/
 
-        //shortlabelGenerator.generateNewShortLabel("EBI-9693147");
+       // shortlabelGenerator.generateNewShortLabel("EBI-9693147");
         //shortlabelGenerator.generateNewShortLabel(("EBI-10889784"));
         //shortlabelGenerator.generateNewShortLabel("EBI-15731927");
 
         /*Multiple amino acid change, sequential positions:*/
         //shortlabelGenerator.generateNewShortLabel("EBI-11178974");//? single AA change?
-        shortlabelGenerator.generateNewShortLabel("EBI-11314033");
+        //shortlabelGenerator.generateNewShortLabel("EBI-11314033");
         //shortlabelGenerator.generateNewShortLabel("EBI-12590047");
         //shortlabelGenerator.generateNewShortLabel("EBI-8839684");
         //shortlabelGenerator.generateNewShortLabel("EBI-9846491");
@@ -62,7 +62,7 @@ public class ShortlabelGeneratorTest {
 
         /*Deletion*/
 
-        //shortlabelGenerator.generateNewShortLabel("EBI-6898602");
+        shortlabelGenerator.generateNewShortLabel("EBI-6898602");
         //shortlabelGenerator.generateNewShortLabel("EBI-16008622");
         //shortlabelGenerator.generateNewShortLabel("EBI-9085688");
         //shortlabelGenerator.generateNewShortLabel("EBI-1641252");
@@ -78,6 +78,7 @@ public class ShortlabelGeneratorTest {
         //shortlabelGenerator.generateNewShortLabel("EBI-16007653");
        // shortlabelGenerator.generateNewShortLabel("EBI-15938869");
        // shortlabelGenerator.generateNewShortLabel("EBI-13639830");
+        // shortlabelGenerator.generateNewShortLabel("EBI-10761861");
 
     }
 
