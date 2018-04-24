@@ -9,8 +9,12 @@ import uk.ac.ebi.intact.jami.model.extension.IntactFeatureEvidence;
 import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.AminoAcids;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.Constants;
+import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.InsertionDataFeed;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.PolyQDataFeed;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,9 +84,10 @@ public class ShortlabelGeneratorHelper {
                 deletionInsertion = true;
             }*/
         } else if (resultingSeqIncreased(oSequence, rSequence)) {
-            if (rSequence.indexOf(oSequence) != 0) {
+            //cannot be insertion case as it already checked for it before the call of this method
+           // if (rSequence.indexOf(oSequence) != 0) {
                 deletionInsertion = true;
-            }
+            //}
         } else if (rSequence.length() > 0 && resultingSeqDescreased(oSequence, rSequence)) {
             deletionInsertion = true;
         }
@@ -90,14 +95,29 @@ public class ShortlabelGeneratorHelper {
         return deletionInsertion;
     }
 
-    public boolean isInsertionCase(String oSequence, String rSequence) {
+    public InsertionDataFeed isInsertionCase(String oSequence, String rSequence,long startPosition,long endPosition) {
         boolean insertionCase = false;
+        String insertedAA="";
         if (resultingSeqIncreased(oSequence, rSequence)) {
-            if (rSequence.indexOf(oSequence) == 0) {
-                insertionCase = true;
+            if (isSingleChange(startPosition, endPosition)) {
+                if(rSequence.charAt(rSequence.length()-1)==oSequence.charAt(0)){ // insertion before single AA
+                    insertionCase=true;
+                    insertedAA = rSequence.substring(0,rSequence.length()-1);
+                }else if(rSequence.charAt(0)==oSequence.charAt(0)){ // insertion after single AA
+                    insertionCase=true;
+                    insertedAA = rSequence.substring(1,rSequence.length());
+                }
+            }else if(oSequence.length()==2 && rSequence.charAt(0)==oSequence.charAt(0)&&rSequence.charAt(rSequence.length()-1)==oSequence.charAt(1)){ // insertion between two AA
+                insertionCase=true;
+                insertedAA=rSequence.substring(1,rSequence.length()-1);
             }
         }
-        return insertionCase;
+
+        InsertionDataFeed insertionDataFeed=new InsertionDataFeed();
+        insertionDataFeed.setInsertion(insertionCase);
+        insertionDataFeed.setInsertionString(insertedAA);
+
+        return insertionDataFeed;
     }
 
     public String generateNonSequentialRange(Long startingPosition) {

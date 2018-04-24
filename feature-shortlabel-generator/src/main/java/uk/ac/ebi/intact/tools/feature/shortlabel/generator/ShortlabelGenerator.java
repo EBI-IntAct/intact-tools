@@ -14,6 +14,7 @@ import uk.ac.ebi.intact.tools.feature.shortlabel.generator.events.*;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.listener.ShortlabelGeneratorListener;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.manager.ShortlabelGeneratorManager;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.Constants;
+import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.InsertionDataFeed;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.PolyQDataFeed;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.utils.ShortlabelGeneratorHelper;
 
@@ -114,6 +115,7 @@ public class ShortlabelGenerator {
         boolean noMutationUpdate = false;
         Collection<Range> ranges;
         PolyQDataFeed polyQDataFeed = null;
+        InsertionDataFeed insertionDataFeed=null;
 
         IntactInteractor interactor = helper.getInteractorByFeatureEvidence(featureEvidence);
 
@@ -260,11 +262,12 @@ public class ShortlabelGenerator {
             /*Dots will be removed in future - Currently the code handles both cases*/
 
             polyQDataFeed = helper.checkIfPoyQAndReturnPDF(orgSeq, resSeq);
+            insertionDataFeed=helper.isInsertionCase(orgSeq, resSeq,rangeStart,rangeEnd);
             if (polyQDataFeed.isPolyQ()) {
                 isPolyq = true;
             } else if(helper.isSingleAAChange(orgSeq,resSeq,rangeStart,rangeEnd)){
                 isSingleAAchange=true;
-            }else if (helper.isInsertionCase(orgSeq, resSeq)) {
+            }else if (insertionDataFeed.isInsertion()) {
                 isInsertionCase = true;
             } else if (helper.isItDelInsCase(orgSeq, resSeq)) {
                 isDeletionInsertion = true;
@@ -318,7 +321,11 @@ public class ShortlabelGenerator {
             }
             if (!isDeletion) {
                 if (!isPolyq) {
-                    newShortlabel += helper.seq2ThreeLetterCodeOnDefaultResSeq(resSeq);
+                    if(isInsertionCase){
+                        newShortlabel += helper.seq2ThreeLetterCodeOnDefaultResSeq(insertionDataFeed.getInsertionString());
+                    }else {
+                        newShortlabel += helper.seq2ThreeLetterCodeOnDefaultResSeq(resSeq);
+                    }
                 } else {
                     newShortlabel += "[" + polyQDataFeed.getRepeatUnit() + "]";
                 }

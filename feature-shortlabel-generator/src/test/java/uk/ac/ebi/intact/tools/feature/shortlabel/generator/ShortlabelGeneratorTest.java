@@ -46,7 +46,7 @@ public class ShortlabelGeneratorTest {
 
         /*Multiple amino acid change, sequential positions:*/
         //shortlabelGenerator.generateNewShortLabel("EBI-11178974");//? single AA change?
-        //shortlabelGenerator.generateNewShortLabel("EBI-11314033");
+        shortlabelGenerator.generateNewShortLabel("EBI-11314033");
         //shortlabelGenerator.generateNewShortLabel("EBI-12590047");
         //shortlabelGenerator.generateNewShortLabel("EBI-8839684");
         //shortlabelGenerator.generateNewShortLabel("EBI-9846491");
@@ -56,9 +56,9 @@ public class ShortlabelGeneratorTest {
         //Second round
 
         //shortlabelGenerator.generateNewShortLabel("EBI-12687520");
-        //shortlabelGenerator.generateNewShortLabel("EBI-11302770");
-       // shortlabelGenerator.generateNewShortLabel("EBI-977116");
-        shortlabelGenerator.generateNewShortLabel("EBI-12687523");
+       // shortlabelGenerator.generateNewShortLabel("EBI-11302770");
+        //shortlabelGenerator.generateNewShortLabel("EBI-977116");
+       // shortlabelGenerator.generateNewShortLabel("EBI-12687523");
 
         /*Deletion*/
 
@@ -69,8 +69,15 @@ public class ShortlabelGeneratorTest {
 
         /*Insertions*/
 
-        //shortlabelGenerator.generateNewShortLabel("EBI-2891626");
-        //shortlabelGenerator.generateNewShortLabel("EBI-11475055");
+        // shortlabelGenerator.generateNewShortLabel("EBI-2891626");
+       // shortlabelGenerator.generateNewShortLabel("EBI-11475055");
+
+        // More cases
+
+        //shortlabelGenerator.generateNewShortLabel("EBI-16022338");
+        //shortlabelGenerator.generateNewShortLabel("EBI-16007653");
+       // shortlabelGenerator.generateNewShortLabel("EBI-15938869");
+       // shortlabelGenerator.generateNewShortLabel("EBI-13639830");
 
     }
 
@@ -124,6 +131,36 @@ public class ShortlabelGeneratorTest {
         }
         String fabricatedRSequence = new String(rSequenceArray);
         boolean deletionInsertion = !fabricatedRSequence.equals(oSequence);
+    }
+
+    @Test
+    public void regexTest4() {
+        boolean isInsertion=false;
+        String oSequence = "LL";
+        String rSequence = "GGSGL";
+        String pattern = ".*";
+        char[] originalSeqArray=oSequence.toCharArray();
+        for(char oSeqChar:originalSeqArray){
+            pattern=pattern+"(?=.*"+oSeqChar+")";
+        }
+        pattern=pattern+".*";
+        Pattern r = Pattern.compile(pattern);
+
+        Matcher m = r.matcher(rSequence);
+        boolean matched=m.matches();
+        int count = 0;
+         if (matched) {
+            while (m.find()) {
+                count++;
+
+            }
+        }
+
+        if(count==oSequence.length()){
+            isInsertion=true;
+        }
+
+
     }
 
 
