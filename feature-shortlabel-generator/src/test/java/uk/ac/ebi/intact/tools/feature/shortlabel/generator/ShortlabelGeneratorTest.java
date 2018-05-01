@@ -62,7 +62,7 @@ public class ShortlabelGeneratorTest {
 
         /*Deletion*/
 
-        shortlabelGenerator.generateNewShortLabel("EBI-6898602");
+       // shortlabelGenerator.generateNewShortLabel("EBI-6898602");
         //shortlabelGenerator.generateNewShortLabel("EBI-16008622");
         //shortlabelGenerator.generateNewShortLabel("EBI-9085688");
         //shortlabelGenerator.generateNewShortLabel("EBI-1641252");
@@ -79,6 +79,8 @@ public class ShortlabelGeneratorTest {
        // shortlabelGenerator.generateNewShortLabel("EBI-15938869");
        // shortlabelGenerator.generateNewShortLabel("EBI-13639830");
         // shortlabelGenerator.generateNewShortLabel("EBI-10761861");
+        //
+        shortlabelGenerator.generateNewShortLabel("EBI-6556225");
 
     }
 

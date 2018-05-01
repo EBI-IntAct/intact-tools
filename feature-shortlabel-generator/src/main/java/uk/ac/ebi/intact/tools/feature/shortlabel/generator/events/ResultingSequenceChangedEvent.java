@@ -43,7 +43,8 @@ public class ResultingSequenceChangedEvent {
         DELETION_INSERTION("Resulting Sequence contains deletion and substitutions"),
         INCREASE("Resulting sequence has increased"),
         DECREASE("Resulting sequence has decreased"),
-        STABLE("Resulting sequence hasn't changed in length");
+        STABLE("Resulting sequence hasn't changed in length"),
+        WRONG_INSERTION("Wrong Insertion Case, Has to be curated manually");
 
         private String message;
 

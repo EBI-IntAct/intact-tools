@@ -97,14 +97,17 @@ public class ShortlabelGeneratorHelper {
 
     public InsertionDataFeed isInsertionCase(String oSequence, String rSequence,long startPosition,long endPosition) {
         boolean insertionCase = false;
+        boolean toBeCuratedManually=false;
         String insertedAA="";
         if (resultingSeqIncreased(oSequence, rSequence)) {
             if (isSingleChange(startPosition, endPosition)) {
                 if(rSequence.charAt(rSequence.length()-1)==oSequence.charAt(0)){ // insertion before single AA
                     insertionCase=true;
+                    toBeCuratedManually=true;
                     insertedAA = rSequence.substring(0,rSequence.length()-1);
                 }else if(rSequence.charAt(0)==oSequence.charAt(0)){ // insertion after single AA
                     insertionCase=true;
+                    toBeCuratedManually=true;
                     insertedAA = rSequence.substring(1,rSequence.length());
                 }
             }else if(oSequence.length()==2 && rSequence.charAt(0)==oSequence.charAt(0)&&rSequence.charAt(rSequence.length()-1)==oSequence.charAt(1)){ // insertion between two AA
@@ -116,6 +119,7 @@ public class ShortlabelGeneratorHelper {
         InsertionDataFeed insertionDataFeed=new InsertionDataFeed();
         insertionDataFeed.setInsertion(insertionCase);
         insertionDataFeed.setInsertionString(insertedAA);
+        insertionDataFeed.setToBeCuratedManually(toBeCuratedManually);
 
         return insertionDataFeed;
     }

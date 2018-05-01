@@ -167,6 +167,7 @@ public class ShortlabelGenerator {
             return;
         }
 
+
         for (Annotation annotation : featureEvidence.getAnnotations()) {
             if (annotation.getTopic().equals(noMutationExportTerm)) {
                 AnnotationFoundEvent event = new AnnotationFoundEvent(featureAc, interactorAc, AnnotationFoundEvent.AnnotationType.NO_MUTATION_EXPORT);
@@ -235,6 +236,12 @@ public class ShortlabelGenerator {
             orgSeq = experimentalRanges[index].getResultingSequence().getOriginalSequence();
             resSeq = experimentalRanges[index].getResultingSequence().getNewSequence();
             calculatedOrgSeq = helper.generateOrgSeq(interactorSeq, rangeStart, rangeEnd);
+
+            if (orgSeq.equals(resSeq)) {
+                TypeErrorEvent event = new TypeErrorEvent(featureAc, interactorAc, TypeErrorEvent.ObjTypeErrorType.SAME_OSEQUENCE_RSEQUENCE);
+                manager.fireOnObjectTypeErrorEvent(event);
+                return;
+            }
 
             if (calculatedOrgSeq == null) {
                 SequenceErrorEvent event = new SequenceErrorEvent(featureAc, interactorAc, rangeAc, SequenceErrorEvent.ErrorType.UNABLE_CALCULATE_ORG_SEQ);
@@ -317,6 +324,11 @@ public class ShortlabelGenerator {
                     newShortlabel += Constants.INSERTION;
                 }
                 ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.INCREASE);
+                manager.fireOnResSeqChangedEvent(event);
+            }
+
+            if(insertionDataFeed.isToBeCuratedManually()){
+                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.WRONG_INSERTION);
                 manager.fireOnResSeqChangedEvent(event);
             }
             if (!isDeletion) {

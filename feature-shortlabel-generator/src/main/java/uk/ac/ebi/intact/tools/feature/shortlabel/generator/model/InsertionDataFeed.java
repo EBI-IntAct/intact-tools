@@ -7,6 +7,7 @@ public class InsertionDataFeed {
 
     private boolean isInsertion;
     private String insertionString;
+    private boolean toBeCuratedManually;
 
 
     public boolean isInsertion() {
@@ -23,5 +24,13 @@ public class InsertionDataFeed {
 
     public void setInsertionString(String insertionString) {
         this.insertionString = insertionString;
+    }
+
+    public boolean isToBeCuratedManually() {
+        return toBeCuratedManually;
+    }
+
+    public void setToBeCuratedManually(boolean toBeCuratedManually) {
+        this.toBeCuratedManually = toBeCuratedManually;
     }
 }
