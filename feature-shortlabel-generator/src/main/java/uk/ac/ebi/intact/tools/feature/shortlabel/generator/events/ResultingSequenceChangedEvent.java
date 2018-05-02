@@ -9,13 +9,22 @@ public class ResultingSequenceChangedEvent {
     private String rangeAc;
     private ChangeType changeType;
     private String message;
+    private String oSeq;
+    private String rSeq;
+    private long rangeStart;
+    private long rangeEnd;
 
-    public ResultingSequenceChangedEvent(String featureAc, String interactorAc, String rangeAc, ChangeType change) {
+    public ResultingSequenceChangedEvent(String featureAc, String interactorAc, String rangeAc,String oSeq,String rSeq,long rangeStart,long rangeEnd,ChangeType change) {
         this.featureAc = (featureAc == null) ? "undefined" : featureAc;
         this.interactorAc = (interactorAc == null) ? "undefined" : interactorAc;
         this.rangeAc = (rangeAc == null) ? "undefined" : rangeAc;
         this.changeType = change;
         this.message = change.getMessage();
+        this.oSeq=oSeq;
+        this.rSeq=rSeq;
+        this.rangeStart=rangeStart;
+        this.rangeEnd=rangeEnd;
+
     }
 
     public String getFeatureAc() {
@@ -37,6 +46,23 @@ public class ResultingSequenceChangedEvent {
     public String getMessage() {
         return message;
     }
+
+    public String getoSeq() {
+        return oSeq;
+    }
+
+    public String getrSeq() {
+        return rSeq;
+    }
+
+    public long getRangeStart() {
+        return rangeStart;
+    }
+
+    public long getRangeEnd() {
+        return rangeEnd;
+    }
+
 
     public enum ChangeType {
         DELETION("Resulting sequence contains deletions"),

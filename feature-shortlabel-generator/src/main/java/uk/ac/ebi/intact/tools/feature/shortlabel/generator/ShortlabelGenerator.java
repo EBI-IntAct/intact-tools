@@ -313,22 +313,22 @@ public class ShortlabelGenerator {
                 }*/
             if (isDeletionInsertion) {
                 newShortlabel += Constants.DEL_INS;
-                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.DELETION_INSERTION);
+                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc,orgSeq,resSeq,rangeStart,rangeEnd,ResultingSequenceChangedEvent.ChangeType.DELETION_INSERTION);
                 manager.fireOnResSeqChangedEvent(event);
             } else if (isDeletion) {
                 newShortlabel += Constants.DELETION;
-                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.DELETION);
+                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc,orgSeq,resSeq,rangeStart,rangeEnd, ResultingSequenceChangedEvent.ChangeType.DELETION);
                 manager.fireOnResSeqChangedEvent(event);
             } else if (helper.resultingSeqIncreased(orgSeq, resSeq)) {
                 if (isInsertionCase) {
                     newShortlabel += Constants.INSERTION;
                 }
-                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.INCREASE);
+                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc,orgSeq,resSeq,rangeStart,rangeEnd, ResultingSequenceChangedEvent.ChangeType.INCREASE);
                 manager.fireOnResSeqChangedEvent(event);
             }
 
             if(insertionDataFeed.isToBeCuratedManually()){
-                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, ResultingSequenceChangedEvent.ChangeType.WRONG_INSERTION);
+                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc,orgSeq,resSeq,rangeStart,rangeEnd, ResultingSequenceChangedEvent.ChangeType.WRONG_INSERTION);
                 manager.fireOnResSeqChangedEvent(event);
             }
             if (!isDeletion) {
