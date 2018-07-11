@@ -100,7 +100,7 @@ public class ShortlabelGeneratorHelper {
         boolean toBeCuratedManually=false;
         String insertedAA="";
         if (resultingSeqIncreased(oSequence, rSequence)) {
-            if (isSingleChange(startPosition, endPosition)) {
+            /*if (isSingleChange(startPosition, endPosition)) {
                 if(rSequence.charAt(rSequence.length()-1)==oSequence.charAt(0)){ // insertion before single AA
                     insertionCase=true;
                     toBeCuratedManually=true;
@@ -110,7 +110,7 @@ public class ShortlabelGeneratorHelper {
                     toBeCuratedManually=true;
                     insertedAA = rSequence.substring(1,rSequence.length());
                 }
-            }else if(oSequence.length()==2 && rSequence.charAt(0)==oSequence.charAt(0)&&rSequence.charAt(rSequence.length()-1)==oSequence.charAt(1)){ // insertion between two AA
+            }else*/ if(oSequence.length()==2 && rSequence.charAt(0)==oSequence.charAt(0)&&rSequence.charAt(rSequence.length()-1)==oSequence.charAt(1)){ // insertion between two AA
                 insertionCase=true;
                 insertedAA=rSequence.substring(1,rSequence.length()-1);
             }
