@@ -52,7 +52,11 @@ public class ShortlabelGeneratorTest {
         //shortlabelGenerator.generateNewShortLabel("EBI-9846491");
         //shortlabelGenerator.generateNewShortLabel("EBI-2891626");
         //shortlabelGenerator.generateNewShortLabel("EBI-15582875");
-
+       // shortlabelGenerator.generateNewShortLabel("EBI-5260097");
+        // shortlabelGenerator.generateNewShortLabel("EBI-16880104");
+        // shortlabelGenerator.generateNewShortLabel("EBI-16879936");
+        // shortlabelGenerator.generateNewShortLabel("EBI-11475055");
+         shortlabelGenerator.generateNewShortLabel("EBI-5260343");
         //Second round
 
         //shortlabelGenerator.generateNewShortLabel("EBI-12687520");
@@ -69,8 +73,9 @@ public class ShortlabelGeneratorTest {
 
         /*Insertions*/
 
-        // shortlabelGenerator.generateNewShortLabel("EBI-2891626");
-       // shortlabelGenerator.generateNewShortLabel("EBI-11475055");
+       //  shortlabelGenerator.generateNewShortLabel("EBI-2891626");
+       // shortlabelGenerator.generateNewShortLabel("EBI-13639830");
+        //shortlabelGenerator.generateNewShortLabel("EBI-10761861");
 
         // More cases
 
@@ -79,8 +84,9 @@ public class ShortlabelGeneratorTest {
        // shortlabelGenerator.generateNewShortLabel("EBI-15938869");
        // shortlabelGenerator.generateNewShortLabel("EBI-13639830");
         // shortlabelGenerator.generateNewShortLabel("EBI-10761861");
-        //
-        shortlabelGenerator.generateNewShortLabel("EBI-6556225");
+
+        //shortlabelGenerator.generateNewShortLabel("EBI-6556225");
+        // shortlabelGenerator.generateNewShortLabel("EBI-5260097");
 
     }
 
