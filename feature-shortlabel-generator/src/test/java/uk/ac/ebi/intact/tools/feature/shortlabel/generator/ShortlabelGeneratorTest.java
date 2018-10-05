@@ -56,7 +56,7 @@ public class ShortlabelGeneratorTest {
         // shortlabelGenerator.generateNewShortLabel("EBI-16880104");
         // shortlabelGenerator.generateNewShortLabel("EBI-16879936");
         // shortlabelGenerator.generateNewShortLabel("EBI-11475055");
-         shortlabelGenerator.generateNewShortLabel("EBI-5260343");
+        // shortlabelGenerator.generateNewShortLabel("EBI-5260343");
         //Second round
 
         //shortlabelGenerator.generateNewShortLabel("EBI-12687520");
@@ -86,7 +86,10 @@ public class ShortlabelGeneratorTest {
         // shortlabelGenerator.generateNewShortLabel("EBI-10761861");
 
         //shortlabelGenerator.generateNewShortLabel("EBI-6556225");
-        // shortlabelGenerator.generateNewShortLabel("EBI-5260097");
+         shortlabelGenerator.generateNewShortLabel("EBI-5260097");
+
+        //complex as an interactor
+       //  shortlabelGenerator.generateNewShortLabel("EBI-16418349");
 
     }
 
