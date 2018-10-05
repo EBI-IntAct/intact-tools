@@ -3,6 +3,7 @@ package uk.ac.ebi.intact.tools.feature.shortlabel.generator.utils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import psidev.psi.mi.jami.model.Entity;
 import psidev.psi.mi.jami.model.Polymer;
 import psidev.psi.mi.jami.model.Range;
 import uk.ac.ebi.intact.jami.model.extension.IntactFeatureEvidence;
@@ -12,9 +13,6 @@ import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.Constants;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.InsertionDataFeed;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.model.PolyQDataFeed;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,9 +33,9 @@ public class ShortlabelGeneratorHelper {
         return startPosition.equals(endPosition);
     }
 
-    public boolean isSingleAAChange(String originalSequence, String resultingSequence,Long startPosition, Long endPosition){
+    public boolean isSingleAAChange(String originalSequence, String resultingSequence, Long startPosition, Long endPosition) {
         return (isSingleChange(startPosition, endPosition)
-                &&resultingSequence.length()==1&&!resultingSequence.equals("."));
+                && resultingSequence.length() == 1 && !resultingSequence.equals("."));
     }
 
     public boolean resultingSeqDescreased(String originalSequence, String resultingSequence) {
@@ -85,8 +83,8 @@ public class ShortlabelGeneratorHelper {
             }*/
         } else if (resultingSeqIncreased(oSequence, rSequence)) {
             //cannot be insertion case as it already checked for it before the call of this method
-           // if (rSequence.indexOf(oSequence) != 0) {
-                deletionInsertion = true;
+            // if (rSequence.indexOf(oSequence) != 0) {
+            deletionInsertion = true;
             //}
         } else if (rSequence.length() > 0 && resultingSeqDescreased(oSequence, rSequence)) {
             deletionInsertion = true;
@@ -95,10 +93,10 @@ public class ShortlabelGeneratorHelper {
         return deletionInsertion;
     }
 
-    public InsertionDataFeed isInsertionCase(String oSequence, String rSequence,long startPosition,long endPosition) {
+    public InsertionDataFeed isInsertionCase(String oSequence, String rSequence, long startPosition, long endPosition) {
         boolean insertionCase = false;
-        boolean toBeCuratedManually=false;
-        String insertedAA="";
+        boolean toBeCuratedManually = false;
+        String insertedAA = "";
         if (resultingSeqIncreased(oSequence, rSequence)) {
             /*if (isSingleChange(startPosition, endPosition)) {
                 if(rSequence.charAt(rSequence.length()-1)==oSequence.charAt(0)){ // insertion before single AA
@@ -110,13 +108,14 @@ public class ShortlabelGeneratorHelper {
                     toBeCuratedManually=true;
                     insertedAA = rSequence.substring(1,rSequence.length());
                 }
-            }else*/ if(oSequence.length()==2 && rSequence.charAt(0)==oSequence.charAt(0)&&rSequence.charAt(rSequence.length()-1)==oSequence.charAt(1)){ // insertion between two AA
-                insertionCase=true;
-                insertedAA=rSequence.substring(1,rSequence.length()-1);
+            }else*/
+            if (oSequence.length() == 2 && rSequence.charAt(0) == oSequence.charAt(0) && rSequence.charAt(rSequence.length() - 1) == oSequence.charAt(1)) { // insertion between two AA
+                insertionCase = true;
+                insertedAA = rSequence.substring(1, rSequence.length() - 1);
             }
         }
 
-        InsertionDataFeed insertionDataFeed=new InsertionDataFeed();
+        InsertionDataFeed insertionDataFeed = new InsertionDataFeed();
         insertionDataFeed.setInsertion(insertionCase);
         insertionDataFeed.setInsertionString(insertedAA);
         insertionDataFeed.setToBeCuratedManually(toBeCuratedManually);
@@ -158,7 +157,21 @@ public class ShortlabelGeneratorHelper {
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED, value = "jamiTransactionManager")
     public IntactInteractor getInteractorByFeatureEvidence(IntactFeatureEvidence intactFeatureEvidence) {
         //To get the whole sequence of a feature, we need to get the interactor
-        return (IntactInteractor) intactFeatureEvidence.getParticipant().getInteractor();
+        IntactInteractor intactInteractor = null;
+        IntactInteractor featureInteractor = (IntactInteractor) intactFeatureEvidence.getParticipant().getInteractor();
+
+        // In case of stable complex one has to get Interactor from Range Participant
+        if (featureInteractor.getInteractorType().getShortName().equals("stable complex")) {
+            if (intactFeatureEvidence.getRanges() != null && !intactFeatureEvidence.getRanges().isEmpty()) {
+                Entity entity = intactFeatureEvidence.getRanges().iterator().next().getParticipant();
+                if (entity != null) {
+                    intactInteractor = (IntactInteractor) intactFeatureEvidence.getRanges().iterator().next().getParticipant().getInteractor();
+                }
+            }
+        } else {
+            intactInteractor = featureInteractor;
+        }
+        return intactInteractor;
     }
 
     public String seq2ThreeLetterCodeOnDefault(String sequence) {
@@ -268,8 +281,8 @@ public class ShortlabelGeneratorHelper {
         boolean isMultipleAAPolycule = false;
         int repeatUnit = 0;
         PolyQDataFeed polyQDataFeed = new PolyQDataFeed();
-        String removedNewLinesRSeq=rSequence.replaceAll("\\n","");
-        removedNewLinesRSeq=removedNewLinesRSeq.replaceAll("\\r","");
+        String removedNewLinesRSeq = rSequence.replaceAll("\\n", "");
+        removedNewLinesRSeq = removedNewLinesRSeq.replaceAll("\\r", "");
         if (oSequence != null && removedNewLinesRSeq != null) {
             if (removedNewLinesRSeq.length() > oSequence.length()) {
                 if (removedNewLinesRSeq.contains(oSequence)) {
