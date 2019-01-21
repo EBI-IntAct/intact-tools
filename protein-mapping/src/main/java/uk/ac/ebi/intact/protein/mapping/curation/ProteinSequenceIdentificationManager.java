@@ -11,7 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
- * This class allows to identify protein sequences using PICR or blast
+ * This class allows to identify protein sequences using Uniprot Protein API or blast
  *
  * @author Marine Dumousseau (marine@ebi.ac.uk)
  * @version $Id$

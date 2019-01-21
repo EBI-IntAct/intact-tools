@@ -2,51 +2,52 @@ package uk.ac.ebi.intact.protein.mapping.actions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.bridges.picr.PicrClient;
-import uk.ac.ebi.intact.bridges.picr.PicrClientException;
+import psidev.psi.mi.jami.bridges.uniprot.rest.UniprotProteinAPIClient;
+import psidev.psi.mi.jami.bridges.uniprot.rest.UniprotProteinAPIClientException;
+import psidev.psi.mi.jami.bridges.uniprot.rest.response.model.DbReferenceType;
+import psidev.psi.mi.jami.bridges.uniprot.rest.response.model.Entry;
 import uk.ac.ebi.intact.protein.mapping.actions.exception.ActionProcessingException;
 import uk.ac.ebi.intact.protein.mapping.actions.status.Status;
 import uk.ac.ebi.intact.protein.mapping.actions.status.StatusLabel;
 import uk.ac.ebi.intact.protein.mapping.factories.ReportsFactory;
-import uk.ac.ebi.intact.protein.mapping.model.actionReport.PICRReport;
+import uk.ac.ebi.intact.protein.mapping.model.actionReport.UniprotProteinAPIReport;
 import uk.ac.ebi.intact.protein.mapping.model.contexts.IdentificationContext;
-import uk.ac.ebi.picr.model.CrossReference;
-import uk.ac.ebi.picr.model.UPEntry;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
- * This class is doing a PICR query using the sequence of the protein to identify. It will first query PICR for swissprot cross references and if not, query PICR for Trembl cross references
+ * This class is doing a query using the sequence of the protein to identify. It will first query Uniprot REST web service
+ * for swissprot cross references and if not, query Uniprot REST web service for Trembl cross references
  *
  * @author Marine Dumousseau (marine@ebi.ac.uk)
  * @version $Id$
  * @since <pre>31-Mar-2010</pre>
  */
 
-public class PICRSearchProcessWithSequence extends IdentificationActionImpl {
+public class UniprotProteinAPISearchProcessWithSequence extends IdentificationActionImpl {
 
     /**
-     * the PICR client
+     * the Uniprot Protein API client
      */
-    private PicrClient picrClient;
+    private UniprotProteinAPIClient uniprotRestClient;
 
     /**
      * Sets up a logger for that class.
      */
-    public static final Log log = LogFactory.getLog( PICRSearchProcessWithSequence.class );
+    public static final Log log = LogFactory.getLog( UniprotProteinAPISearchProcessWithSequence.class );
 
     /**
-     * Create a new PICRSearchProcessWithSequence
+     * Create a new UniprotProteinAPISearchProcessWithSequence
      */
-    public PICRSearchProcessWithSequence(ReportsFactory factory){
+    public UniprotProteinAPISearchProcessWithSequence(ReportsFactory factory){
         super(factory);
-        this.picrClient = new PicrClient();
+        this.uniprotRestClient = new UniprotProteinAPIClient();
     }
 
     /**
-     * Query PICR with the sequence of the protein to identify. Query PICR on swissprot database first, if no results, query the Trembl database.
-     * If several proteins are matching, they are added to the list of possible proteins in the DefaultPICRReport
+     * Query with the sequence of the protein to identify. Query Uniprot Protein API on swissprot database first, if no results, query the Trembl database.
+     * If several proteins are matching, they are added to the list of possible proteins in the DefaultUniprotProteinAPIReport
      * @param context  : the context of the protein
      * @return an unique uniprot AC if only one uniprot entry is matching the sequence, null otherwise
      * @throws uk.ac.ebi.intact.protein.mapping.actions.exception.ActionProcessingException
@@ -61,8 +62,9 @@ public class PICRSearchProcessWithSequence extends IdentificationActionImpl {
             taxId = context.getOrganism().getTaxId();
         }
 
-        // create a DefaultPICRReport
-        PICRReport report = getReportsFactory().getPICRReport(ActionName.PICR_sequence_Swissprot);
+        // create a DefaultUniprotProteinAPIReport
+        //TODO Review UniprotProteinAPIReport
+        UniprotProteinAPIReport report = getReportsFactory().getUniprotProteinAPIReport(ActionName.UniprotProteinAPI_sequence_Swissprot);
         this.listOfReports.add(report);
 
         if (taxId == null){
@@ -72,19 +74,19 @@ public class PICRSearchProcessWithSequence extends IdentificationActionImpl {
 
         try {
             // Get the matching swissprot entries
-            ArrayList<String> swissprotIds = this.picrClient.getSwissprotIdsForSequence(sequence, taxId);
+            List<String> swissprotIds = this.uniprotRestClient.getSwissprotIdsForSequence(sequence, taxId);
 
             // We have an unique matching swissprot entry
             if (swissprotIds.size() == 1){
                 if (swissprotIds.get(0) != null){
-                    Status status = new Status(StatusLabel.COMPLETED, "PICR successfully returned an unique Swissprot accession " + swissprotIds.get(0));
+                    Status status = new Status(StatusLabel.COMPLETED, "Uniprot Protein API successfully returned an unique Swissprot accession " + swissprotIds.get(0));
                     report.setStatus(status);
 
                     report.setIsASwissprotEntry(true);
                     return swissprotIds.get(0);
                 }
                 else {
-                    log.error("PICR returned an empty Swissprot accession for the sequence " + sequence);
+                    log.error("Uniprot Protein API returned an empty Swissprot accession for the sequence " + sequence);
                 }
             }
             // we have several matching swissprot entries
@@ -108,31 +110,31 @@ public class PICRSearchProcessWithSequence extends IdentificationActionImpl {
                 }
                 // The different matching swissprot entries were different proteins so we can't choose
                 else if (accessions.size() > 1){
-                    Status status = new Status(StatusLabel.TO_BE_REVIEWED, "PICR returned " + swissprotIds.size() + " Swissprot accessions which are matching the sequence.");
+                    Status status = new Status(StatusLabel.TO_BE_REVIEWED, "Uniprot Protein API returned " + swissprotIds.size() + " Swissprot accessions which are matching the sequence.");
                     report.setStatus(status);
                 }
                 else {
-                    log.error("PICR didn't return any valid results for the protein with the sequence "+ context.getSequence() +". Check the sequence.");
+                    log.error("Uniprot Protein API didn't return any valid results for the protein with the sequence "+ context.getSequence() +". Check the sequence.");
                 }
 
                 report.addWarning("Several SwissprotIds have been returned. We will not process the sequence mapping in Trembl.");
             }
             // We don't have any matching swissprot entries
             else {
-                Status status = new Status(StatusLabel.FAILED, "PICR couldn't match the sequence to any Swissprot entries.");
+                Status status = new Status(StatusLabel.FAILED, "Uniprot Protein API couldn't match the sequence to any Swissprot entries.");
                 report.setStatus(status);
 
-                // new PICR query so new report
-                PICRReport report2 = getReportsFactory().getPICRReport(ActionName.PICR_sequence_Trembl);
+                // new Uniprot Protein API query so new report
+                UniprotProteinAPIReport report2 = getReportsFactory().getUniprotProteinAPIReport(ActionName.UniprotProteinAPI_sequence_Trembl);
                 this.listOfReports.add(report2);
                 report2.getWarnings().addAll(report.getWarnings());
 
                 // Get the matching trembl entries
-                ArrayList<String> tremblIds = this.picrClient.getTremblIdsForSequence(sequence, taxId);
+                List<String> tremblIds = this.uniprotRestClient.getTremblIdsForSequence(sequence, taxId);
 
                 // Only one matching Trembl entry
                 if (tremblIds.size() == 1){
-                    Status status2 = new Status(StatusLabel.COMPLETED, "PICR successfully returned an unique Trembl accession " + tremblIds.get(0));
+                    Status status2 = new Status(StatusLabel.COMPLETED, "Uniprot Protein API successfully returned an unique Trembl accession " + tremblIds.get(0));
                     report2.setStatus(status2);
 
                     report.setIsASwissprotEntry(false);
@@ -141,7 +143,7 @@ public class PICRSearchProcessWithSequence extends IdentificationActionImpl {
                 // Several trembl entries, we can't choose and we can't merge as we don't have trembl splice variants sequences
                 else if (tremblIds.size() > 1){
                     
-                    Status status2 = new Status(StatusLabel.TO_BE_REVIEWED, "PICR returned " + tremblIds.size() + " Trembl accessions which are matching the sequence.");
+                    Status status2 = new Status(StatusLabel.TO_BE_REVIEWED, "Uniprot Protein API returned " + tremblIds.size() + " Trembl accessions which are matching the sequence.");
                     report2.setStatus(status2);
 
                     for (String ac : tremblIds){
@@ -150,21 +152,21 @@ public class PICRSearchProcessWithSequence extends IdentificationActionImpl {
                 }
                 // no matching Trembl entry
                 else {
-                    Status status2 = new Status(StatusLabel.FAILED, "PICR couldn't match any Uniprot entry to the sequence " + sequence);
+                    Status status2 = new Status(StatusLabel.FAILED, "Uniprot Protein API couldn't match any Uniprot entry to the sequence " + sequence);
                     report2.setStatus(status2);
 
-                    UPEntry entry = this.picrClient.getUPEntriesForSequence(sequence, taxId);
+                    Entry entry = this.uniprotRestClient.getUPEntriesForSequence(sequence, taxId);
 
                     if (entry != null){
-                        for (CrossReference ref : entry.getIdenticalCrossReferences()){
-                            report.addCrossReference(ref.getDatabaseName(), ref.getAccession());
+                        for (DbReferenceType ref : entry.getDbReference()){
+                            report.addCrossReference(ref.getType(), ref.getId());
                         }
                     }
                 }
             }
 
-        } catch (PicrClientException e) {
-            throw  new ActionProcessingException("PICR couldn't match the sequence " + sequence + " to any Uniprot accession. Check your identifier and/or organism.", e);
+        } catch (UniprotProteinAPIClientException e) {
+            throw  new ActionProcessingException("Uniprot Protein API couldn't match the sequence " + sequence + " to any Uniprot accession. Check your identifier and/or organism.", e);
         }
         return null;
     }

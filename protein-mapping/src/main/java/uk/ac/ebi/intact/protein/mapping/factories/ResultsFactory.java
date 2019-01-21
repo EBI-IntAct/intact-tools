@@ -2,7 +2,7 @@ package uk.ac.ebi.intact.protein.mapping.factories;
 
 import uk.ac.ebi.intact.protein.mapping.results.BlastResults;
 import uk.ac.ebi.intact.protein.mapping.results.IdentificationResults;
-import uk.ac.ebi.intact.protein.mapping.results.PICRCrossReferences;
+import uk.ac.ebi.intact.protein.mapping.results.UniprotProteinAPICrossReferences;
 
 /**
  * Interface for factories returning results of protein mapping
@@ -16,5 +16,5 @@ public interface ResultsFactory {
 
     public BlastResults getBlastResults();
     public IdentificationResults getIdentificationResults();
-    public PICRCrossReferences getPICRCrossReferences();
+    public UniprotProteinAPICrossReferences getUniprotProteinAPICrossReferences();
 }

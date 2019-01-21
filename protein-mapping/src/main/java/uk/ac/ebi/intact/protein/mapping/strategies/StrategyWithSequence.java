@@ -7,7 +7,7 @@ import uk.ac.ebi.intact.protein.mapping.actions.exception.ActionProcessingExcept
 import uk.ac.ebi.intact.protein.mapping.model.actionReport.BlastReport;
 import uk.ac.ebi.intact.protein.mapping.model.actionReport.IntactCrc64Report;
 import uk.ac.ebi.intact.protein.mapping.model.actionReport.MappingReport;
-import uk.ac.ebi.intact.protein.mapping.model.actionReport.PICRReport;
+import uk.ac.ebi.intact.protein.mapping.model.actionReport.UniprotProteinAPIReport;
 import uk.ac.ebi.intact.protein.mapping.model.contexts.BlastContext;
 import uk.ac.ebi.intact.protein.mapping.model.contexts.IdentificationContext;
 import uk.ac.ebi.intact.protein.mapping.results.BlastResults;
@@ -40,7 +40,7 @@ public class StrategyWithSequence extends IdentificationStrategyImpl implements 
     private boolean enableIntactSearch = false;
 
     /**
-     * A boolean value to know if we want to run a Blast if PICR can't map the sequence to any uniprot entry
+     * A boolean value to know if we want to run a Blast if Uniprot Protein API can't map the sequence to any uniprot entry
      */
     private boolean isBasicBlastRequired = false;
 
@@ -62,7 +62,7 @@ public class StrategyWithSequence extends IdentificationStrategyImpl implements 
 
     /**
      *
-     * @return true if we want to process a blast on uniprot if PICR couldn't map any uniprot accession to the sequence
+     * @return true if we want to process a blast on uniprot if Uniprot Protein API couldn't map any uniprot accession to the sequence
      */
     public boolean isBasicBlastRequired() {
         return isBasicBlastRequired;
@@ -101,7 +101,7 @@ public class StrategyWithSequence extends IdentificationStrategyImpl implements 
     }
 
     /**
-     * Query PICR with the sequence first. If PICR didn't return any results, we can run a CRC64 search on Intact if the intact context is not null and/or
+     * Query Uniprot Protein API with the sequence first. If Uniprot Protein API didn't return any results, we can run a CRC64 search on Intact if the intact context is not null and/or
      * we can run a BLAST on uniprot if the boolean value isBasicBlastRequired is set to true
      * @param context : the context of the protein to identify
      * @return the result instance containing the information and results of this strategy
@@ -120,16 +120,16 @@ public class StrategyWithSequence extends IdentificationStrategyImpl implements 
 
             try {
 
-                // Query PICR with the sequence and the organism
+                // Query Uniprot Protein API with the sequence and the organism
                 String uniprot = this.listOfActions.get(0).runAction(context);
                 // add the reports in  the result
                 result.getListOfActions().addAll(this.listOfActions.get(0).getListOfActionReports());
                 // process the isoforms and set the uniprot id of the result
                 processIsoforms(uniprot, result);
-                // get the PICR report
-                PICRReport lastAction = (PICRReport) result.getLastAction();
+                // get the Uniprot Protein API report
+                UniprotProteinAPIReport lastAction = (UniprotProteinAPIReport) result.getLastAction();
 
-                // If PICR didn't return any Uniprot accession
+                // If Uniprot Protein API didn't return any Uniprot accession
                 if (!result.hasUniqueUniprotId() && lastAction.getPossibleAccessions().isEmpty()){
                     // we can run a CRC64 search on Intact if it is enabled
                     if (isEnableIntactSearch()){
@@ -153,9 +153,9 @@ public class StrategyWithSequence extends IdentificationStrategyImpl implements 
                         processLastAction(context, result);
                     }
                 }
-                // PICR was successful
+                // Uniprot Protein API was successful
                 else {
-                    // PICR could map the sequence to a Trembl entry
+                    // Uniprot Protein API could map the sequence to a Trembl entry
                     if (result.hasUniqueUniprotId() && !lastAction.isASwissprotEntry()){
                         // get the uniprot protein for the Trembl entry
                         UniprotProtein tremblEntry = getUniprotProteinFor(result.getFinalUniprotId());
@@ -205,8 +205,8 @@ public class StrategyWithSequence extends IdentificationStrategyImpl implements 
      */
     @Override
     protected void initialiseSetOfActions() {
-        // the first action is a PICR query using the sequence
-        PICRSearchProcessWithSequence firstAction = new PICRSearchProcessWithSequence(getReportsFactory());
+        // the first action is a Uniprot Protein API query using the sequence
+        UniprotProteinAPISearchProcessWithSequence firstAction = new UniprotProteinAPISearchProcessWithSequence(getReportsFactory());
         this.listOfActions.add(firstAction);
 
         // the second action is a CRC64 search on Intact (only if the intact context is not null)
@@ -223,7 +223,7 @@ public class StrategyWithSequence extends IdentificationStrategyImpl implements 
     }
 
     /**
-     * Query PICR with the sequence first. If PICR didn't return any results, we can run a CRC64 search on Intact if the intact context is not null and/or
+     * Query Uniprot Protein API with the sequence first. If Uniprot Protein API didn't return any results, we can run a CRC64 search on Intact if the intact context is not null and/or
      * we can run a BLAST on uniprot if the boolean value isBasicBlastRequired is set to true
      * @param context  : the context of the protein
      * @return an unique uniprot accession if possible, null otherwise
@@ -233,16 +233,16 @@ public class StrategyWithSequence extends IdentificationStrategyImpl implements 
         // always clear the previous reports
         this.listOfReports.clear();
 
-        // query PICR with the sequence
+        // query Uniprot Protein API with the sequence
         String uniprot = this.listOfActions.get(0).runAction(context);
         // process the isoforms
         uniprot = processIsoforms(uniprot);
         // collect the reports and add them to the list of reports
         this.listOfReports.addAll(this.listOfActions.get(0).getListOfActionReports());
-        // get the PICR report
-        PICRReport report = (PICRReport) this.listOfReports.get(this.listOfReports.size() - 1);
+        // get the Uniprot Protein API report
+        UniprotProteinAPIReport report = (UniprotProteinAPIReport) this.listOfReports.get(this.listOfReports.size() - 1);
 
-        // If PICR didn't return any Uniprot accession
+        // If Uniprot Protein API didn't return any Uniprot accession
         if (uniprot == null && report.getPossibleAccessions().isEmpty()){
             // we can run a CRC64 search on Intact if it is enabled
             if (isEnableIntactSearch()){
@@ -266,9 +266,9 @@ public class StrategyWithSequence extends IdentificationStrategyImpl implements 
                 processLastAction(context, null);
             }
         }
-        // PICR was successful
+        // Uniprot Protein API was successful
         else {
-            // PICR could map the sequence to a Trembl entry
+            // Uniprot Protein API could map the sequence to a Trembl entry
             if (uniprot != null && !report.isASwissprotEntry()){
                 // get the uniprot protein for the Trembl entry
                 UniprotProtein tremblEntry = getUniprotProteinFor(uniprot);

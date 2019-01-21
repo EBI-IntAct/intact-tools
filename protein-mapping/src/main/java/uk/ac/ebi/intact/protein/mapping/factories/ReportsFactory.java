@@ -17,5 +17,5 @@ public interface ReportsFactory {
     public IntactCrc64Report getIntactCrc64Report(ActionName name);
     public IntactReport getIntactReport(ActionName name);
     public MappingReport getMappingReport(ActionName name);
-    public PICRReport getPICRReport(ActionName name);
+    public UniprotProteinAPIReport getUniprotProteinAPIReport(ActionName name);
 }

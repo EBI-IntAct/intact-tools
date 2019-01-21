@@ -52,16 +52,16 @@ public class ProteinSequenceResultsWriter {
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(ouptutFile, true));
 
-        // PICR/swissprot remapping could identify one single uniprot id. We want to give the blast results of swissprot remapping if necessary
+        // Uniprot Protein API/swissprot remapping could identify one single uniprot id. We want to give the blast results of swissprot remapping if necessary
         if (identificationResults.hasUniqueUniprotId()){
             // fast identifier
             writer.write(fastaSequence.getIdentifier());
 
-            // we retrieved the uniprot id from PICR
+            // we retrieved the uniprot id from Uniprot Protein API
             writer.write(NEW_COLUMN);
             writer.write(identificationResults.getFinalUniprotId());
 
-            // no other possible uniprot ids from PICR
+            // no other possible uniprot ids from Uniprot Protein API
             writer.write(NEW_COLUMN);
             writer.write(EMPTY);
 
@@ -91,10 +91,10 @@ public class ProteinSequenceResultsWriter {
         }
         else {
 
-            // PICR sequence to be reviewed ? if yes, no blast to report
+            // Uniprot Protein API sequence to be reviewed ? if yes, no blast to report
             MappingReport report = identificationResults.getLastAction();
             if (report != null && report.getStatusLabel().equals(StatusLabel.TO_BE_REVIEWED)
-                    && (report.getName().equals(ActionName.PICR_sequence_Swissprot) || report.getName().equals(ActionName.PICR_sequence_Trembl))){
+                    && (report.getName().equals(ActionName.UniprotProteinAPI_sequence_Swissprot) || report.getName().equals(ActionName.UniprotProteinAPI_sequence_Trembl))){
 
                 // fasta identifier
                 writer.write(fastaSequence.getIdentifier());
@@ -103,7 +103,7 @@ public class ProteinSequenceResultsWriter {
                 writer.write(NEW_COLUMN);
                 writer.write(EMPTY);
 
-                // possible uniprot from PICR
+                // possible uniprot from Uniprot Protein API
                 writer.write(NEW_COLUMN);
                 writer.write(StringUtils.join(report.getPossibleAccessions(), ", "));
 
@@ -126,7 +126,7 @@ public class ProteinSequenceResultsWriter {
                         writer.write(NEW_COLUMN);
                         writer.write(EMPTY);
 
-                        // no other possible uniprot ids from PICR
+                        // no other possible uniprot ids from Uniprot Protein API
                         writer.write(NEW_COLUMN);
                         writer.write(EMPTY);
 
@@ -247,7 +247,7 @@ public class ProteinSequenceResultsWriter {
         writer.write(NEW_COLUMN);
         writer.write("unique uniprot ID");
         writer.write(NEW_COLUMN);
-        writer.write("Possible uniprot ids from PICR");
+        writer.write("Possible uniprot ids from Uniprot Protein API");
         writer.write(NEW_COLUMN);
         writer.write("Uniprot candidate from blast");
         writer.write(NEW_COLUMN);

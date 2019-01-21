@@ -86,10 +86,6 @@ public class CrossReferenceSearchProcess extends ActionNeedingUniprotService {
      * initialises the list of databases in uniprot with a MI number
      */
     private void initialisePsiMIDatabaseToUniprot() {
-        HashSet<DatabaseType> CYGD = new HashSet<DatabaseType>();
-        CYGD.add(DatabaseType.CYGD);
-        psiMIDatabaseToUniprot.put("MI:0464", CYGD);
-        psiDatabaseToUniprot.put("cygd", CYGD);
         HashSet<DatabaseType> ddbjEmblGenbank = new HashSet<DatabaseType>();
         ddbjEmblGenbank.add(DatabaseType.getDatabaseType("DDBJ"));
         ddbjEmblGenbank.add(DatabaseType.EMBL);
@@ -132,10 +128,6 @@ public class CrossReferenceSearchProcess extends ActionNeedingUniprotService {
         wormbase.add(DatabaseType.WORMBASE);
         psiMIDatabaseToUniprot.put("MI:0487", wormbase);
         psiDatabaseToUniprot.put("wormbase", wormbase);
-        HashSet<DatabaseType> ipi = new HashSet<DatabaseType>();
-        ipi.add(DatabaseType.IPI);
-        psiMIDatabaseToUniprot.put("MI:0675", ipi);
-        psiDatabaseToUniprot.put("ipi", ipi);
         HashSet<DatabaseType> peptide = new HashSet<DatabaseType>();
         peptide.add(DatabaseType.PRIDE);
         peptide.add(DatabaseType.PEPTIDEATLAS);

@@ -1,20 +1,22 @@
 package uk.ac.ebi.intact.protein.mapping.strategies;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import uk.ac.ebi.intact.model.BioSource;
 import uk.ac.ebi.intact.protein.mapping.actions.status.StatusLabel;
 import uk.ac.ebi.intact.protein.mapping.model.actionReport.MappingReport;
 import uk.ac.ebi.intact.protein.mapping.model.actionReport.impl.DefaultBlastReport;
 import uk.ac.ebi.intact.protein.mapping.model.actionReport.impl.DefaultMappingReport;
-import uk.ac.ebi.intact.protein.mapping.model.actionReport.impl.DefaultPICRReport;
+import uk.ac.ebi.intact.protein.mapping.model.actionReport.impl.DefaultUniprotProteinAPIReport;
 import uk.ac.ebi.intact.protein.mapping.model.contexts.IdentificationContext;
 import uk.ac.ebi.intact.protein.mapping.results.BlastResults;
 import uk.ac.ebi.intact.protein.mapping.results.IdentificationResults;
 import uk.ac.ebi.intact.protein.mapping.strategies.exceptions.StrategyException;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -44,9 +46,9 @@ public class StrategyWithIdentifierTest {
     }
 
     @Test
-    public void test_PICR_Swissprot_Successfull(){
+    public void test_UniprotProteinAPI_Swissprot_Successfull(){
         // 46 identifiers to test
-        File file = new File(getClass().getResource("/Identifiers_PICR_Swissprot.csv").getFile());
+        File file = new File(getClass().getResource("/Identifiers_UniprotProteinAPI_Swissprot.csv").getFile());
         BioSource organism = createBiosource("human", "Homo sapiens", "9606");
 
         try {
@@ -70,19 +72,15 @@ public class StrategyWithIdentifierTest {
                 Assert.assertNotNull(result);
                 Assert.assertNotNull(result.getFinalUniprotId());
                 Assert.assertEquals(ac_toFind, result.getFinalUniprotId());
-                Assert.assertEquals(true, result.getLastAction() instanceof DefaultPICRReport);
+                Assert.assertTrue(result.getLastAction() instanceof DefaultUniprotProteinAPIReport);
                 Assert.assertEquals(StatusLabel.COMPLETED, result.getLastAction().getStatus().getLabel());
-                Assert.assertEquals(true, result.getLastAction().isASwissprotEntry());
+                Assert.assertTrue(result.getLastAction().isASwissprotEntry());
 
                 line = reader.readLine();
             }
 
             reader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (StrategyException e) {
+        } catch (IOException | StrategyException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
@@ -113,7 +111,7 @@ public class StrategyWithIdentifierTest {
 
                 Assert.assertNotNull(result);
                 Assert.assertNotNull(result.getFinalUniprotId());
-                Assert.assertEquals(true, result.getLastAction() instanceof DefaultBlastReport);
+                Assert.assertTrue(result.getLastAction() instanceof DefaultBlastReport);
                 Assert.assertEquals(StatusLabel.COMPLETED, result.getListOfActions().get(0).getStatus().getLabel());
 
                 for (MappingReport r : result.getListOfActions()){
@@ -140,11 +138,7 @@ public class StrategyWithIdentifierTest {
             }
 
             reader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (StrategyException e) {
+        } catch (IOException | StrategyException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
@@ -167,9 +161,9 @@ public class StrategyWithIdentifierTest {
             Assert.assertNotNull(result);
             Assert.assertNotNull(result.getFinalUniprotId());
             Assert.assertEquals(ac_to_find, result.getFinalUniprotId());
-            Assert.assertEquals(true, result.getLastAction() instanceof DefaultPICRReport);
+            Assert.assertTrue(result.getLastAction() instanceof DefaultUniprotProteinAPIReport);
             Assert.assertEquals(StatusLabel.COMPLETED, result.getLastAction().getStatus().getLabel());
-            Assert.assertEquals(true, result.getLastAction().isASwissprotEntry());
+            Assert.assertTrue(result.getLastAction().isASwissprotEntry());
         } catch (StrategyException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -200,9 +194,9 @@ public class StrategyWithIdentifierTest {
             Assert.assertNotNull(result);
             Assert.assertNotNull(result.getFinalUniprotId());
             Assert.assertEquals(ac_to_find, result.getFinalUniprotId());
-            Assert.assertEquals(false, result.getLastAction() instanceof DefaultPICRReport);
+            Assert.assertFalse(result.getLastAction() instanceof DefaultUniprotProteinAPIReport);
             Assert.assertEquals(StatusLabel.COMPLETED, result.getLastAction().getStatus().getLabel());
-            Assert.assertEquals(true, result.getLastAction().isASwissprotEntry());
+            Assert.assertTrue(result.getLastAction().isASwissprotEntry());
         } catch (StrategyException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -210,7 +204,6 @@ public class StrategyWithIdentifierTest {
     }
 
     @Test
-    @Ignore
     public void test_SwissprotIdentifier_Isoform_NotExcluded(){
         BioSource organism = createBiosource("human", "Homo sapiens", "9606");
         String identifier = "IPI00220991";
@@ -230,9 +223,9 @@ public class StrategyWithIdentifierTest {
             Assert.assertNotNull(result);
             Assert.assertNotNull(result.getFinalUniprotId());
             Assert.assertEquals(ac_to_find, result.getFinalUniprotId());
-            Assert.assertEquals(true, result.getLastAction() instanceof DefaultPICRReport);
+            Assert.assertTrue(result.getLastAction() instanceof DefaultUniprotProteinAPIReport);
             Assert.assertEquals(StatusLabel.COMPLETED, result.getLastAction().getStatus().getLabel());
-            Assert.assertEquals(true, result.getLastAction().isASwissprotEntry());
+            Assert.assertTrue(result.getLastAction().isASwissprotEntry());
         } catch (StrategyException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

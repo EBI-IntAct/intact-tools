@@ -2,32 +2,31 @@ package uk.ac.ebi.intact.protein.mapping.model.actionReport.impl;
 
 import org.apache.commons.collections.CollectionUtils;
 import uk.ac.ebi.intact.protein.mapping.actions.ActionName;
-import uk.ac.ebi.intact.protein.mapping.model.actionReport.PICRReport;
-import uk.ac.ebi.intact.protein.mapping.results.PICRCrossReferences;
-import uk.ac.ebi.intact.protein.mapping.results.impl.DefaultPICRCrossReferences;
+import uk.ac.ebi.intact.protein.mapping.model.actionReport.UniprotProteinAPIReport;
+import uk.ac.ebi.intact.protein.mapping.results.impl.DefaultUniprotProteinAPICrossReferences;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * This report aims at storing the information and results of a query on PICR
+ * This report aims at storing the information and results of a query on Uniprot Protein API
  *
  * @author Marine Dumousseau (marine@ebi.ac.uk)
  * @version $Id$
  * @since <pre>01-Apr-2010</pre>
  */
-public class DefaultPICRReport extends DefaultMappingReport implements PICRReport<DefaultPICRCrossReferences>{
+public class DefaultUniprotProteinAPIReport extends DefaultMappingReport implements UniprotProteinAPIReport<DefaultUniprotProteinAPICrossReferences> {
 
     /**
-     * the list of cross references that PICR could collect
+     * the list of cross references that Uniprot Protein API could collect
      */
-    private Set<DefaultPICRCrossReferences> crossReferences = new HashSet<DefaultPICRCrossReferences>();
+    private Set<DefaultUniprotProteinAPICrossReferences> crossReferences = new HashSet<DefaultUniprotProteinAPICrossReferences>();
 
     /**
-     * Create a new DefaultPICRReport
+     * Create a new DefaultUniprotProteinAPIReport
      * @param name : name of the action
      */
-    public DefaultPICRReport(ActionName name) {
+    public DefaultUniprotProteinAPIReport(ActionName name) {
         super(name);
     }
 
@@ -35,7 +34,7 @@ public class DefaultPICRReport extends DefaultMappingReport implements PICRRepor
      *
      * @return the cross references
      */
-    public Set<DefaultPICRCrossReferences> getCrossReferences(){
+    public Set<DefaultUniprotProteinAPICrossReferences> getCrossReferences(){
         return this.crossReferences;
     }
 
@@ -47,7 +46,7 @@ public class DefaultPICRReport extends DefaultMappingReport implements PICRRepor
     public void addCrossReference(String databaseName, String accession){
         boolean isADatabaseNamePresent = false;
 
-        for (DefaultPICRCrossReferences c : this.crossReferences){
+        for (DefaultUniprotProteinAPICrossReferences c : this.crossReferences){
             if (c.getDatabase() != null){
                 if (c.getDatabase().equalsIgnoreCase(databaseName)){
                     isADatabaseNamePresent = true;
@@ -57,27 +56,27 @@ public class DefaultPICRReport extends DefaultMappingReport implements PICRRepor
         }
 
         if (!isADatabaseNamePresent){
-            DefaultPICRCrossReferences picrRefs = new DefaultPICRCrossReferences();
+            DefaultUniprotProteinAPICrossReferences picrRefs = new DefaultUniprotProteinAPICrossReferences();
             picrRefs.setDatabase(databaseName);
             picrRefs.addAccession(accession);
         }
     }
 
     /**
-     * Add a new PICRCrossReference instance to the list of references
-     * @param refs : the PICRCrossReference instance to add
+     * Add a new UniprotProteinAPICrossReference instance to the list of references
+     * @param refs : the UniprotProteinAPICrossReference instance to add
      */
-    public void addPICRCrossReference(DefaultPICRCrossReferences refs){
+    public void addUniprotProteinAPICrossReference(DefaultUniprotProteinAPICrossReferences refs){
          if (refs != null){
             this.crossReferences.add(refs);
          }
     }
 
     /**
-     * Set the PICR cross references
-     * @param crossReferences : set containing the PICR cross references
+     * Set the Uniprot Protein API cross references
+     * @param crossReferences : set containing the Uniprot Protein API cross references
      */
-    public void setCrossReferences(Set<DefaultPICRCrossReferences> crossReferences) {
+    public void setCrossReferences(Set<DefaultUniprotProteinAPICrossReferences> crossReferences) {
         this.crossReferences = crossReferences;
     }
 
@@ -105,7 +104,7 @@ public class DefaultPICRReport extends DefaultMappingReport implements PICRRepor
             return false;
         }
 
-        final DefaultPICRReport report = (DefaultPICRReport) o;
+        final DefaultUniprotProteinAPIReport report = (DefaultUniprotProteinAPIReport) o;
 
         return CollectionUtils.isEqualCollection(this.crossReferences, report.getCrossReferences());
     }
@@ -117,9 +116,9 @@ public class DefaultPICRReport extends DefaultMappingReport implements PICRRepor
         buffer.append(super.toString() + "\n");
 
         if (!crossReferences.isEmpty()){
-            buffer.append("PICR references : [");
+            buffer.append("Uniprot Protein API references : [");
 
-            for (PICRCrossReferences ref : crossReferences) {
+            for (DefaultUniprotProteinAPICrossReferences ref : crossReferences) {
                 buffer.append(ref.toString() + " ; ");
             }
 

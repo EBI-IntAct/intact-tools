@@ -10,11 +10,11 @@ import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.protein.mapping.model.actionReport.MappingReport;
 import uk.ac.ebi.intact.protein.mapping.model.actionReport.impl.DefaultBlastReport;
-import uk.ac.ebi.intact.protein.mapping.model.actionReport.impl.DefaultPICRReport;
+import uk.ac.ebi.intact.protein.mapping.model.actionReport.impl.DefaultUniprotProteinAPIReport;
 import uk.ac.ebi.intact.protein.mapping.model.contexts.UpdateContext;
 import uk.ac.ebi.intact.protein.mapping.results.BlastResults;
 import uk.ac.ebi.intact.protein.mapping.results.IdentificationResults;
-import uk.ac.ebi.intact.protein.mapping.results.PICRCrossReferences;
+import uk.ac.ebi.intact.protein.mapping.results.UniprotProteinAPICrossReferences;
 import uk.ac.ebi.intact.protein.mapping.strategies.StrategyForProteinUpdate;
 import uk.ac.ebi.intact.protein.mapping.strategies.exceptions.StrategyException;
 
@@ -517,11 +517,11 @@ public class ProteinUpdateManager {
                     writer.write("possible accession : " + ac + "\n");
                 }
 
-                if (report instanceof DefaultPICRReport){
-                    DefaultPICRReport picr = (DefaultPICRReport) report;
+                if (report instanceof DefaultUniprotProteinAPIReport){
+                    DefaultUniprotProteinAPIReport picr = (DefaultUniprotProteinAPIReport) report;
                     writer.write("Is a Swissprot entry : " + picr.isASwissprotEntry() + "\n");
 
-                    for (PICRCrossReferences xrefs : picr.getCrossReferences()){
+                    for (UniprotProteinAPICrossReferences xrefs : picr.getCrossReferences()){
                         writer.write(xrefs.getDatabase() + " cross reference : " + xrefs.getAccessions() + "\n");
                     }
                 }
