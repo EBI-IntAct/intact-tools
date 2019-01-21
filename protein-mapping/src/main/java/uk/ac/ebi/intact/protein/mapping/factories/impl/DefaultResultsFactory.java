@@ -3,10 +3,10 @@ package uk.ac.ebi.intact.protein.mapping.factories.impl;
 import uk.ac.ebi.intact.protein.mapping.factories.ResultsFactory;
 import uk.ac.ebi.intact.protein.mapping.results.BlastResults;
 import uk.ac.ebi.intact.protein.mapping.results.IdentificationResults;
-import uk.ac.ebi.intact.protein.mapping.results.PICRCrossReferences;
+import uk.ac.ebi.intact.protein.mapping.results.UniprotProteinAPICrossReferences;
 import uk.ac.ebi.intact.protein.mapping.results.impl.DefaultBlastResults;
 import uk.ac.ebi.intact.protein.mapping.results.impl.DefaultIdentificationResults;
-import uk.ac.ebi.intact.protein.mapping.results.impl.DefaultPICRCrossReferences;
+import uk.ac.ebi.intact.protein.mapping.results.impl.DefaultUniprotProteinAPICrossReferences;
 
 /**
  * Deafault factory for mapping results
@@ -28,7 +28,7 @@ public class DefaultResultsFactory implements ResultsFactory{
     }
 
     @Override
-    public PICRCrossReferences getPICRCrossReferences() {
-        return new DefaultPICRCrossReferences();
+    public UniprotProteinAPICrossReferences getUniprotProteinAPICrossReferences() {
+        return new DefaultUniprotProteinAPICrossReferences();
     }
 }

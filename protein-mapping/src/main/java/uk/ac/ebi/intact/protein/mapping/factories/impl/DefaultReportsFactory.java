@@ -36,7 +36,7 @@ public class DefaultReportsFactory implements ReportsFactory {
     }
 
     @Override
-    public PICRReport getPICRReport(ActionName name) {
-        return new DefaultPICRReport(name);
+    public UniprotProteinAPIReport getUniprotProteinAPIReport(ActionName name) {
+        return new DefaultUniprotProteinAPIReport(name);
     }
 }

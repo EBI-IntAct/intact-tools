@@ -3,14 +3,14 @@ package uk.ac.ebi.intact.protein.mapping.results;
 import java.util.Set;
 
 /**
- * Interface for PICR corss references
+ * Interface for Uniprot Protein API cross references
  *
  * @author Marine Dumousseau (marine@ebi.ac.uk)
  * @version $Id$
  * @since <pre>24/06/11</pre>
  */
 
-public interface PICRCrossReferences {
+public interface UniprotProteinAPICrossReferences {
 
     public String getDatabase();
     public Set<String> getAccessions();

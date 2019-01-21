@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.model.CvDatabase;
 import uk.ac.ebi.intact.protein.mapping.actions.CrossReferenceSearchProcess;
 import uk.ac.ebi.intact.protein.mapping.actions.IdentificationAction;
-import uk.ac.ebi.intact.protein.mapping.actions.PICRSearchProcessWithAccession;
+import uk.ac.ebi.intact.protein.mapping.actions.UniprotProteinAPISearchProcessWithAccession;
 import uk.ac.ebi.intact.protein.mapping.actions.SwissprotRemappingProcess;
 import uk.ac.ebi.intact.protein.mapping.actions.exception.ActionProcessingException;
 import uk.ac.ebi.intact.protein.mapping.model.actionReport.BlastReport;
@@ -49,99 +49,99 @@ public class StrategyWithIdentifier extends IdentificationStrategyImpl implement
     private static ArrayList<String> organismWithSpecialCase = new ArrayList<String>();
 
     /**
-     * List of database MI numbers that PICR can manage
+     * List of database MI numbers that Uniprot Protein API can manage
      */
-    public static Set<String> listOfDatabaseNamesManagedByPICR = new HashSet<String>();
+    public static Set<String> listOfDatabaseNamesManagedByUniprotProteinAPI = new HashSet<String>();
 
     /**
-     * List of database MI numbers that PICR can manage
+     * List of database MI numbers that Uniprot Protein API can manage
      */
-    public static Set<String> listOfMIDatabasesManagedByPICR = new HashSet<String>();
+    public static Set<String> listOfMIDatabasesManagedByUniprotProteinAPI = new HashSet<String>();
 
     /**
      * Create a new strategy with identifier
      */
     public StrategyWithIdentifier(){
         super();
-        if (listOfMIDatabasesManagedByPICR.isEmpty()){
-            initialiseListOfMIDatabasesManagedByPICR();
-            initialiseListOfDatabaseNamesManagedByPICR();
+        if (listOfMIDatabasesManagedByUniprotProteinAPI.isEmpty()){
+            initialiseListOfMIDatabasesManagedByUniprotProteinAPI();
+            initialiseListOfDatabaseNamesManagedByUniprotProteinAPI();
         }
     }
 
     public StrategyWithIdentifier(UniprotService uniprotService) {
         super(uniprotService);
-        if (listOfMIDatabasesManagedByPICR.isEmpty()){
-            initialiseListOfMIDatabasesManagedByPICR();
-            initialiseListOfDatabaseNamesManagedByPICR();
+        if (listOfMIDatabasesManagedByUniprotProteinAPI.isEmpty()){
+            initialiseListOfMIDatabasesManagedByUniprotProteinAPI();
+            initialiseListOfDatabaseNamesManagedByUniprotProteinAPI();
         }
     }
 
-    private void initialiseListOfMIDatabasesManagedByPICR(){
-        listOfMIDatabasesManagedByPICR.add(CvDatabase.UNIPROT_MI_REF);
-        listOfMIDatabasesManagedByPICR.add(CvDatabase.FLYBASE_MI_REF);
-        listOfMIDatabasesManagedByPICR.add(CvDatabase.DDBG_MI_REF);
-        listOfMIDatabasesManagedByPICR.add(CvDatabase.REFSEQ_MI_REF);
+    private void initialiseListOfMIDatabasesManagedByUniprotProteinAPI(){
+        listOfMIDatabasesManagedByUniprotProteinAPI.add(CvDatabase.UNIPROT_MI_REF);
+        listOfMIDatabasesManagedByUniprotProteinAPI.add(CvDatabase.FLYBASE_MI_REF);
+        listOfMIDatabasesManagedByUniprotProteinAPI.add(CvDatabase.DDBG_MI_REF);
+        listOfMIDatabasesManagedByUniprotProteinAPI.add(CvDatabase.REFSEQ_MI_REF);
         // genbank
-        listOfMIDatabasesManagedByPICR.add("MI:0860");
+        listOfMIDatabasesManagedByUniprotProteinAPI.add("MI:0860");
         // genbank protein
-        listOfMIDatabasesManagedByPICR.add("MI:0851");
+        listOfMIDatabasesManagedByUniprotProteinAPI.add("MI:0851");
         // genbank nucl
-        listOfMIDatabasesManagedByPICR.add("MI:0852");
+        listOfMIDatabasesManagedByUniprotProteinAPI.add("MI:0852");
         // wormbase
-        listOfMIDatabasesManagedByPICR.add("MI:0487");
+        listOfMIDatabasesManagedByUniprotProteinAPI.add("MI:0487");
         // ipi
-        listOfMIDatabasesManagedByPICR.add("MI:0675");
-        listOfMIDatabasesManagedByPICR.add(CvDatabase.ENSEMBL_MI_REF);
-        listOfMIDatabasesManagedByPICR.add(CvDatabase.WWPDB_MI_REF);
-        listOfMIDatabasesManagedByPICR.add(CvDatabase.RCSB_PDB_MI_REF);
+        listOfMIDatabasesManagedByUniprotProteinAPI.add("MI:0675");
+        listOfMIDatabasesManagedByUniprotProteinAPI.add(CvDatabase.ENSEMBL_MI_REF);
+        listOfMIDatabasesManagedByUniprotProteinAPI.add(CvDatabase.WWPDB_MI_REF);
+        listOfMIDatabasesManagedByUniprotProteinAPI.add(CvDatabase.RCSB_PDB_MI_REF);
         // het
-        listOfMIDatabasesManagedByPICR.add("MI:2017");
+        listOfMIDatabasesManagedByUniprotProteinAPI.add("MI:2017");
         // pdbe
-        listOfMIDatabasesManagedByPICR.add("MI:0472");
+        listOfMIDatabasesManagedByUniprotProteinAPI.add("MI:0472");
         // emdb
-        listOfMIDatabasesManagedByPICR.add("MI:0936");
+        listOfMIDatabasesManagedByUniprotProteinAPI.add("MI:0936");
         // pdbj
-        listOfMIDatabasesManagedByPICR.add("MI:0806");
-        listOfMIDatabasesManagedByPICR.add(CvDatabase.SGD_MI_REF);
-        listOfMIDatabasesManagedByPICR.add(CvDatabase.UNIPARC_MI_REF);
+        listOfMIDatabasesManagedByUniprotProteinAPI.add("MI:0806");
+        listOfMIDatabasesManagedByUniprotProteinAPI.add(CvDatabase.SGD_MI_REF);
+        listOfMIDatabasesManagedByUniprotProteinAPI.add(CvDatabase.UNIPARC_MI_REF);
     }
 
-    private void initialiseListOfDatabaseNamesManagedByPICR(){
-        listOfDatabaseNamesManagedByPICR.add(CvDatabase.UNIPROT);
-        listOfDatabaseNamesManagedByPICR.add("SwissProt");
-        listOfDatabaseNamesManagedByPICR.add("TrEMBL");
-        listOfDatabaseNamesManagedByPICR.add(CvDatabase.FLYBASE);
-        listOfDatabaseNamesManagedByPICR.add(CvDatabase.DDBG);
-        listOfDatabaseNamesManagedByPICR.add("EMBL");
-        listOfDatabaseNamesManagedByPICR.add(CvDatabase.REFSEQ);
-        listOfDatabaseNamesManagedByPICR.add("genbank indentifier");
-        listOfDatabaseNamesManagedByPICR.add("genbank_protein_gi");
-        listOfDatabaseNamesManagedByPICR.add("genbank_nucl_gi");
-        listOfDatabaseNamesManagedByPICR.add("JPO");
-        listOfDatabaseNamesManagedByPICR.add("PIR");
-        listOfDatabaseNamesManagedByPICR.add("TAIR");
-        listOfDatabaseNamesManagedByPICR.add("UniMES");
-        listOfDatabaseNamesManagedByPICR.add("USPTO");
-        listOfDatabaseNamesManagedByPICR.add("wormbase");
-        listOfDatabaseNamesManagedByPICR.add("SEGUID");
-        listOfDatabaseNamesManagedByPICR.add("ipi");
-        listOfDatabaseNamesManagedByPICR.add(CvDatabase.ENSEMBL);
-        listOfDatabaseNamesManagedByPICR.add("EPO");
-        listOfDatabaseNamesManagedByPICR.add("H Inv");
-        listOfDatabaseNamesManagedByPICR.add("PDB");
-        listOfDatabaseNamesManagedByPICR.add(CvDatabase.WWPDB);
-        listOfDatabaseNamesManagedByPICR.add(CvDatabase.RCSB_PDB);
-        listOfDatabaseNamesManagedByPICR.add("het");
-        listOfDatabaseNamesManagedByPICR.add("pdbe");
-        listOfDatabaseNamesManagedByPICR.add("eMDB");
-        listOfDatabaseNamesManagedByPICR.add("pdbj");
-        listOfDatabaseNamesManagedByPICR.add("PRF");
-        listOfDatabaseNamesManagedByPICR.add(CvDatabase.SGD);
-        listOfDatabaseNamesManagedByPICR.add("TROME");
-        listOfDatabaseNamesManagedByPICR.add(CvDatabase.UNIPARC);
-        listOfDatabaseNamesManagedByPICR.add("VEGA");
-        listOfDatabaseNamesManagedByPICR.add("KIPO");
+    private void initialiseListOfDatabaseNamesManagedByUniprotProteinAPI(){
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add(CvDatabase.UNIPROT);
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("SwissProt");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("TrEMBL");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add(CvDatabase.FLYBASE);
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add(CvDatabase.DDBG);
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("EMBL");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add(CvDatabase.REFSEQ);
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("genbank indentifier");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("genbank_protein_gi");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("genbank_nucl_gi");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("JPO");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("PIR");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("TAIR");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("UniMES");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("USPTO");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("wormbase");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("SEGUID");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("ipi");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add(CvDatabase.ENSEMBL);
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("EPO");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("H Inv");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("PDB");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add(CvDatabase.WWPDB);
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add(CvDatabase.RCSB_PDB);
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("het");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("pdbe");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("eMDB");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("pdbj");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("PRF");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add(CvDatabase.SGD);
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("TROME");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add(CvDatabase.UNIPARC);
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("VEGA");
+        listOfDatabaseNamesManagedByUniprotProteinAPI.add("KIPO");
     }
 
     /**
@@ -149,8 +149,8 @@ public class StrategyWithIdentifier extends IdentificationStrategyImpl implement
      */
     protected void initialiseSetOfActions(){
 
-        // first action = PICRSearchProcessWithAccession
-        PICRSearchProcessWithAccession firstAction = new PICRSearchProcessWithAccession(getReportsFactory());
+        // first action = UniprotProteinAPISearchProcessWithAccession
+        UniprotProteinAPISearchProcessWithAccession firstAction = new UniprotProteinAPISearchProcessWithAccession(getReportsFactory());
         this.listOfActions.add(firstAction);
 
         // second action = CrossReferenceSearchProcess (optional)
@@ -190,14 +190,14 @@ public class StrategyWithIdentifier extends IdentificationStrategyImpl implement
         return false;
     }
 
-    private boolean isADatabaseManagedByPICR(String database, String databaseName){
+    private boolean isADatabaseManagedByUniprotProteinAPI(String database, String databaseName){
 
         if (database != null){
-            if (listOfMIDatabasesManagedByPICR.contains(database)){
+            if (listOfMIDatabasesManagedByUniprotProteinAPI.contains(database)){
                 return true;
             }
             else {
-                for (String name : listOfDatabaseNamesManagedByPICR){
+                for (String name : listOfDatabaseNamesManagedByUniprotProteinAPI){
                     if (name.equalsIgnoreCase(database)){
                         return true;
                     }
@@ -205,7 +205,7 @@ public class StrategyWithIdentifier extends IdentificationStrategyImpl implement
             }
         }
         else if (databaseName != null){
-            for (String name : listOfDatabaseNamesManagedByPICR){
+            for (String name : listOfDatabaseNamesManagedByUniprotProteinAPI){
                 if (name.equalsIgnoreCase(database)){
                     return true;
                 }
@@ -235,7 +235,7 @@ public class StrategyWithIdentifier extends IdentificationStrategyImpl implement
     }
 
     /**
-     * This strategy is using PICR and/or uniprot cross reference search to map the identifier to an unique uniprot AC. If an unique Trembl is found,
+     * This strategy is using Uniprot Protein API and/or uniprot cross reference search to map the identifier to an unique uniprot AC. If an unique Trembl is found,
      * the strategy will use the SwissprotRemappingProcess to remap the trembl entry to a Swissprot entry.
      * @param context : the context of the protein to identify
      * @return the results
@@ -255,12 +255,12 @@ public class StrategyWithIdentifier extends IdentificationStrategyImpl implement
                 String uniprot = null;
 
                 if (context.getDatabaseForIdentifier() == null && context.getDatabaseName() == null){
-                    log.warn("The identifier " + context.getIdentifier() + " is not associated to a database name or MI, so we will not use PICR" +
+                    log.warn("The identifier " + context.getIdentifier() + " is not associated to a database name or MI, so we will not use Uniprot Protein API" +
                             " to map this identifier to an uniprot entry.");
                 }
 
-                if (isADatabaseManagedByPICR(context.getDatabaseForIdentifier(), context.getDatabaseName())){
-                    // result of PICR
+                if (isADatabaseManagedByUniprotProteinAPI(context.getDatabaseForIdentifier(), context.getDatabaseName())){
+                    // result of Uniprot Protein API
                     uniprot = this.listOfActions.get(0).runAction(context);
                     // get the reports of the first action
                     result.getListOfActions().addAll(this.listOfActions.get(0).getListOfActionReports());
@@ -288,11 +288,11 @@ public class StrategyWithIdentifier extends IdentificationStrategyImpl implement
                     runCrossReferenceProcess(context, result);
                 }
 
-                // PICR and uniprot could map the identifier to a Swissprot accession
+                // Uniprot Protein API and uniprot could map the identifier to a Swissprot accession
                 if (result.getFinalUniprotId() != null){
                     MappingReport report = result.getLastAction();
 
-                    // PICR or uniprot could map to a Trembl entry
+                    // Uniprot Protein API or uniprot could map to a Trembl entry
                     if (!report.isASwissprotEntry()){
 
                         // get the uniprot protein
@@ -341,7 +341,7 @@ public class StrategyWithIdentifier extends IdentificationStrategyImpl implement
     }
 
     /**
-     * This action is using PICR and/or uniprot cross reference search to map the identifier to an unique uniprot AC. If an unique Trembl is found,
+     * This action is using Uniprot Protein API and/or uniprot cross reference search to map the identifier to an unique uniprot AC. If an unique Trembl is found,
      * the strategy will use the SwissprotRemappingProcess to remap the trembl entry to a Swissprot entry.
      * @param context  : the context of the protein
      * @return an unique uniprot Accession if possible, null otherwise
@@ -353,12 +353,12 @@ public class StrategyWithIdentifier extends IdentificationStrategyImpl implement
         String uniprot = null;
 
         if (context.getDatabaseForIdentifier() == null && context.getDatabaseName() == null){
-            log.warn("The identifier " + context.getIdentifier() + " is not associated to a database name or MI, so we will not use PICR" +
+            log.warn("The identifier " + context.getIdentifier() + " is not associated to a database name or MI, so we will not use Uniprot Protein API" +
                     " to map this identifier to an uniprot entry.");
         }
 
-        if (isADatabaseManagedByPICR(context.getDatabaseForIdentifier(), context.getDatabaseName())){
-            // result of PICR
+        if (isADatabaseManagedByUniprotProteinAPI(context.getDatabaseForIdentifier(), context.getDatabaseName())){
+            // result of Uniprot Protein API
             uniprot = this.listOfActions.get(0).runAction(context);
             // get the reports of the first action
             this.listOfReports.addAll(this.listOfActions.get(0).getListOfActionReports());
@@ -391,7 +391,7 @@ public class StrategyWithIdentifier extends IdentificationStrategyImpl implement
         // Get the last report
         MappingReport report = this.listOfReports.get(this.listOfReports.size() - 1);
 
-        // If PICR and Uniprot could mapp the identifier to an unique Uniprot accession
+        // If Uniprot Protein API and Uniprot could mapp the identifier to an unique Uniprot accession
         if (uniprot != null){
 
             // if the accession is a Trembl accession

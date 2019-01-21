@@ -1,34 +1,34 @@
 package uk.ac.ebi.intact.protein.mapping.results.impl;
 
 import org.apache.commons.collections.CollectionUtils;
-import uk.ac.ebi.intact.protein.mapping.results.PICRCrossReferences;
+import uk.ac.ebi.intact.protein.mapping.results.UniprotProteinAPICrossReferences;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * This class contains the cross references that returns PICR for an identifier/sequence
+ * This class contains the cross references that returns Uniprot Protein API for an identifier/sequence
  *
  * @author Marine Dumousseau (marine@ebi.ac.uk)
  * @version $Id$
  * @since <pre>19-May-2010</pre>
  */
-public class DefaultPICRCrossReferences implements PICRCrossReferences{
+public class DefaultUniprotProteinAPICrossReferences implements UniprotProteinAPICrossReferences{
 
     /**
-     * The database name returned by PICR
+     * The database name returned by Uniprot Protein API
      */
     private String database;
 
     /**
-     * The list of accessions from this database PICR returned
+     * The list of accessions from this database Uniprot Protein API returned
      */
     private Set<String> accessions = new HashSet<String>();
 
     /**
-     * Create a new DefaultPICRCrossReferences instance
+     * Create a new DefaultUniprotProteinAPICrossReferences instance
      */
-    public DefaultPICRCrossReferences() {
+    public DefaultUniprotProteinAPICrossReferences() {
         database = null;
     }
 
@@ -121,7 +121,7 @@ public class DefaultPICRCrossReferences implements PICRCrossReferences{
             return false;
         }
 
-        final DefaultPICRCrossReferences refs = (DefaultPICRCrossReferences) o;
+        final DefaultUniprotProteinAPICrossReferences refs = (DefaultUniprotProteinAPICrossReferences) o;
 
         if ( database != null ) {
             if (!database.equals( refs.getDatabase() )){
@@ -157,11 +157,11 @@ public class DefaultPICRCrossReferences implements PICRCrossReferences{
 
     public boolean isIdenticalTo(Object o){
 
-        if (!(o instanceof DefaultPICRCrossReferences)){
+        if (!(o instanceof DefaultUniprotProteinAPICrossReferences)){
             return false;
         }
 
-        final DefaultPICRCrossReferences refs = (DefaultPICRCrossReferences) o;
+        final DefaultUniprotProteinAPICrossReferences refs = (DefaultUniprotProteinAPICrossReferences) o;
 
         if ( database != null ) {
             if (!database.equals( refs.getDatabase() )){
@@ -179,7 +179,7 @@ public class DefaultPICRCrossReferences implements PICRCrossReferences{
     public String toString() {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("PICR cross reference : [" + database != null ? database : "");
+        buffer.append("Uniprot Protein API cross reference : [" + database != null ? database : "");
 
         if (!accessions.isEmpty()){
             buffer.append(" Accessions : ");

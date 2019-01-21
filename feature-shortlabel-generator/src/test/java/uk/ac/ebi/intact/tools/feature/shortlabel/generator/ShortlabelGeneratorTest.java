@@ -1,5 +1,6 @@
 package uk.ac.ebi.intact.tools.feature.shortlabel.generator;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -24,7 +25,8 @@ public class ShortlabelGeneratorTest {
     }
 
     @Test
-    public void ShortlabelGeneratorTest_1() {
+    @Ignore
+    public void shortlabelGeneratorTest_1() {
         ShortlabelGenerator shortlabelGenerator = getShortlabelGenerator();
         shortlabelGenerator.addListener(new FeatureListener());
         /*polycules*/
@@ -107,7 +109,7 @@ public class ShortlabelGeneratorTest {
     public void regexTest2() {
         String oSequence = "QLQQ";
         String rSequence = "QLQQQLQQQLPQQLQQ";
-        Double remainder = new Double(rSequence.length() % oSequence.length());
+        Double remainder = (double) (rSequence.length() % oSequence.length());
         if (remainder == 0d) {
             int factor = rSequence.length() / oSequence.length();
             String pattern = "(" + oSequence + ")" + "{" + factor + "}";

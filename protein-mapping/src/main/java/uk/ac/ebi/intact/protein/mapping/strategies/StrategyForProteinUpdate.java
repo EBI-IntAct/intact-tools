@@ -38,7 +38,7 @@ public class StrategyForProteinUpdate extends IdentificationStrategyImpl {
     public static final Log log = LogFactory.getLog( StrategyForProteinUpdate.class );
 
     /**
-     * boolean value to know if we want to process a blast when the results on PICR are unsuccessful and the sequence is not null.
+     * boolean value to know if we want to process a blast when the results on Uniprot Protein API are unsuccessful and the sequence is not null.
      */
     private boolean isBasicBlastProcessRequired = false;
 
