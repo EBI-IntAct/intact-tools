@@ -522,9 +522,9 @@ public class ShortlabelGeneratorTest {
     @Ignore
     public void shortlabelGeneratorTest_ComplexAsInteractor() {
         ShortlabelGenerator shortlabelGenerator = getShortlabelGenerator();
-        // IntactFeatureEvidence intactFeatureEvidence = new IntactFeatureEvidence();
+        IntactFeatureEvidence intactFeatureEvidence = new IntactFeatureEvidence();
         // this above testFeature synced with following feature from database
-        IntactFeatureEvidence intactFeatureEvidence = shortlabelGenerator.getFeatureEvidence("EBI-16418349", 3);
+        // IntactFeatureEvidence intactFeatureEvidence = shortlabelGenerator.getFeatureEvidence("EBI-16418349", 3);
         intactFeatureEvidence.setShortName("test11-22test");
         IntactComplex interactor = new IntactComplex("testComplex");
         CvTerm featureType = new DefaultCvTerm("(mutation decreasing)");
@@ -539,11 +539,19 @@ public class ShortlabelGeneratorTest {
         ResultingSequence resultingSequence1 = new DefaultResultingSequence("I", "K");
         Range range1 = new ExperimentalRange(start1, end1, resultingSequence1);
 
+
         Position start2 = new DefaultPosition(66);
         Position end2 = new DefaultPosition(66);
         ResultingSequence resultingSequence2 = new DefaultResultingSequence("L", "K");
         Range range2 = new ExperimentalRange(start2, end2, resultingSequence2);
 
+        IntactProtein rangeParticipantInteractor1 = new IntactProtein("testInteractor");
+        CvTerm rangeParticipantInteractorType1 = new DefaultCvTerm("protein");
+        rangeParticipantInteractor1.setInteractorType(rangeParticipantInteractorType1);
+        rangeParticipantInteractor1.setSequence("MLLKKHAGKGGGREPRSEDPTPAEQHCARTMPPCAVLAALLSVVAVVSCLYLGVKTNDLQARIAALESAKGAPSIHLLPDTLDHLKTMVQEKVERLLAQKSYEHMAKIRIAREAPSECNCPAGPPGKRGKRGRRGESGPPGQPGPQGPPGPKGDKGEQGDQGPRMVFPKINHGFLSADQQLIKRRLIKGDQGQAGPPGPPGPPGPRGPPGDTGKDGPRGMPGVPGEPGKPGEQGLMGPLGPPGQKGSIGAPGIPGMNGQKGEPGLPGAVGQNGIPGPKGEPGEQGEKGDAGENGPKGDTGEKGDPGSSAAGIKGEPGESGRPGQKGEPGLPGLPGLPGIKGEPGFIGPQGEPGLPGLPGTKGERGEAGPPGRGERGEPGAPGPKGKQGESGTRGPKGSKGDRGEKGDSGAQGPRGPPGQKGDQGATEIIDYNGNLHEALQRITTLTVTGPPGPPGPQGLQGPKGEQGSPGIPGMDGEQGLKGSKGDMGDPGMTGEKGGIGLPGLPGANGMKGEKGDSGMPGPQGPSIIGPPGPPGPHGPPGPMGPHGLPGPKGTDGPMGPHGPAGPKGERGEKGAMGEPGPRGPYGLPGKDGEPGLDGFPGPRGEKGDLGEKGEKGFRGVKGEKGEPGQPGLDGLDAPCQLGPDGLPMPGCWQK");
+        ParticipantEvidence rangeParticipant1 = new DefaultParticipantEvidence(rangeParticipantInteractor1);
+        range1.setParticipant(rangeParticipant1);
+        range2.setParticipant(rangeParticipant1);
 
         intactFeatureEvidence.getRanges().clear();
         intactFeatureEvidence.getRanges().add(range1);
