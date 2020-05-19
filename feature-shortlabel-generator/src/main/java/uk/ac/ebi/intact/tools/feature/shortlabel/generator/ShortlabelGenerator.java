@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.Annotation;
 import psidev.psi.mi.jami.model.CvTerm;
+import psidev.psi.mi.jami.model.Protein;
 import psidev.psi.mi.jami.model.Range;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.extension.ExperimentalRange;
@@ -112,10 +113,11 @@ public class ShortlabelGenerator {
         String interactorAc;
         String interactorSeq;
         String interactorType;
+        String uniprotName = null;
         boolean noMutationUpdate = false;
         Collection<Range> ranges;
         PolyQDataFeed polyQDataFeed = null;
-        InsertionDataFeed insertionDataFeed=null;
+        InsertionDataFeed insertionDataFeed = null;
 
         IntactInteractor interactor = helper.getInteractorByFeatureEvidence(featureEvidence);
 
@@ -136,6 +138,9 @@ public class ShortlabelGenerator {
 
         interactorAc = interactor.getAc();
         interactorType = interactor.getInteractorType().getShortName();
+        if (interactor instanceof Protein) {
+            uniprotName = ((Protein) interactor).getUniprotkb();
+        }
 
         if (!interactorType.equals("protein") && !interactorType.equals("peptide")) {
             TypeErrorEvent event = new TypeErrorEvent(featureAc, interactorAc, TypeErrorEvent.ObjTypeErrorType.WRONG_INTERACTOR_TYPE);
@@ -181,7 +186,13 @@ public class ShortlabelGenerator {
             }
         }
         if (!noMutationUpdate) {
-            featureEvidence.setShortName(Constants.PROTEIN_PREFIX);
+            if (uniprotName != null) {
+                featureEvidence.setShortName(uniprotName + Constants.PROTEIN_NAME_SEPARATOR + Constants.PROTEIN_PREFIX);
+            } else {
+                featureEvidence.setShortName(Constants.PROTEIN_PREFIX);
+                ObjRetrieveErrorEvent event = new ObjRetrieveErrorEvent(null, null, ObjRetrieveErrorEvent.ErrorType.UNABLE_RETRIEVE_UNIPROT_NAME);
+                manager.fireOnRetrieveObjErrorEvent(event);
+            }
         }
         if (featureEvidence.getRanges() == null || featureEvidence.getRanges().size() == 0) {
             RangeErrorEvent event = new RangeErrorEvent(featureAc, interactorAc, null, RangeErrorEvent.ErrorType.RANGE_NULL);
@@ -206,7 +217,7 @@ public class ShortlabelGenerator {
             boolean isDeletion = false;
             boolean isDeletionInsertion = false;
             boolean isInsertionCase = false;
-            boolean isSingleAAchange=false;
+            boolean isSingleAAchange = false;
             boolean isPolyq = false;
             String rangeAc = experimentalRanges[index].getAc();
 
@@ -269,12 +280,12 @@ public class ShortlabelGenerator {
             /*Dots will be removed in future - Currently the code handles both cases*/
 
             polyQDataFeed = helper.checkIfPoyQAndReturnPDF(orgSeq, resSeq);
-            insertionDataFeed=helper.isInsertionCase(orgSeq, resSeq,rangeStart,rangeEnd);
+            insertionDataFeed = helper.isInsertionCase(orgSeq, resSeq, rangeStart, rangeEnd);
             if (polyQDataFeed.isPolyQ()) {
                 isPolyq = true;
-            } else if(helper.isSingleAAChange(orgSeq,resSeq,rangeStart,rangeEnd)){
-                isSingleAAchange=true;
-            }else if (insertionDataFeed.isInsertion()) {
+            } else if (helper.isSingleAAChange(orgSeq, resSeq, rangeStart, rangeEnd)) {
+                isSingleAAchange = true;
+            } else if (insertionDataFeed.isInsertion()) {
                 isInsertionCase = true;
             } else if (helper.isItDelInsCase(orgSeq, resSeq)) {
                 isDeletionInsertion = true;
@@ -313,29 +324,29 @@ public class ShortlabelGenerator {
                 }*/
             if (isDeletionInsertion) {
                 newShortlabel += Constants.DEL_INS;
-                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc,orgSeq,resSeq,rangeStart,rangeEnd,ResultingSequenceChangedEvent.ChangeType.DELETION_INSERTION);
+                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, orgSeq, resSeq, rangeStart, rangeEnd, ResultingSequenceChangedEvent.ChangeType.DELETION_INSERTION);
                 manager.fireOnResSeqChangedEvent(event);
             } else if (isDeletion) {
                 newShortlabel += Constants.DELETION;
-                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc,orgSeq,resSeq,rangeStart,rangeEnd, ResultingSequenceChangedEvent.ChangeType.DELETION);
+                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, orgSeq, resSeq, rangeStart, rangeEnd, ResultingSequenceChangedEvent.ChangeType.DELETION);
                 manager.fireOnResSeqChangedEvent(event);
             } else if (helper.resultingSeqIncreased(orgSeq, resSeq)) {
                 if (isInsertionCase) {
                     newShortlabel += Constants.INSERTION;
                 }
-                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc,orgSeq,resSeq,rangeStart,rangeEnd, ResultingSequenceChangedEvent.ChangeType.INCREASE);
+                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, orgSeq, resSeq, rangeStart, rangeEnd, ResultingSequenceChangedEvent.ChangeType.INCREASE);
                 manager.fireOnResSeqChangedEvent(event);
             }
 
-            if(insertionDataFeed.isToBeCuratedManually()){
-                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc,orgSeq,resSeq,rangeStart,rangeEnd, ResultingSequenceChangedEvent.ChangeType.WRONG_INSERTION);
+            if (insertionDataFeed.isToBeCuratedManually()) {
+                ResultingSequenceChangedEvent event = new ResultingSequenceChangedEvent(featureAc, interactorAc, rangeAc, orgSeq, resSeq, rangeStart, rangeEnd, ResultingSequenceChangedEvent.ChangeType.WRONG_INSERTION);
                 manager.fireOnResSeqChangedEvent(event);
             }
             if (!isDeletion) {
                 if (!isPolyq) {
-                    if(isInsertionCase){
+                    if (isInsertionCase) {
                         newShortlabel += helper.seq2ThreeLetterCodeOnDefaultResSeq(insertionDataFeed.getInsertionString());
-                    }else {
+                    } else {
                         newShortlabel += helper.seq2ThreeLetterCodeOnDefaultResSeq(resSeq);
                     }
                 } else {
