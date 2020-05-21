@@ -113,7 +113,7 @@ public class ShortlabelGenerator {
         String interactorAc;
         String interactorSeq;
         String interactorType;
-        String uniprotName = null;
+        String interactorName = null;
         boolean noMutationUpdate = false;
         Collection<Range> ranges;
         PolyQDataFeed polyQDataFeed = null;
@@ -139,7 +139,10 @@ public class ShortlabelGenerator {
         interactorAc = interactor.getAc();
         interactorType = interactor.getInteractorType().getShortName();
         if (interactor instanceof Protein) {
-            uniprotName = ((Protein) interactor).getUniprotkb();
+            interactorName = ((Protein) interactor).getUniprotkb();
+        }
+        if (interactorName == null) {
+            interactorName = interactor.getShortName();
         }
 
         if (!interactorType.equals("protein") && !interactorType.equals("peptide")) {
@@ -186,11 +189,11 @@ public class ShortlabelGenerator {
             }
         }
         if (!noMutationUpdate) {
-            if (uniprotName != null) {
-                featureEvidence.setShortName(uniprotName + Constants.PROTEIN_NAME_SEPARATOR + Constants.PROTEIN_PREFIX);
+            if (interactorName != null) {
+                featureEvidence.setShortName(interactorName + Constants.PROTEIN_NAME_SEPARATOR + Constants.PROTEIN_PREFIX);
             } else {
                 featureEvidence.setShortName(Constants.PROTEIN_PREFIX);
-                ObjRetrieveErrorEvent event = new ObjRetrieveErrorEvent(null, null, ObjRetrieveErrorEvent.ErrorType.UNABLE_RETRIEVE_UNIPROT_NAME);
+                ObjRetrieveErrorEvent event = new ObjRetrieveErrorEvent(featureAc, interactorAc, ObjRetrieveErrorEvent.ErrorType.UNABLE_RETRIEVE_INTERACTOR_NAME);
                 manager.fireOnRetrieveObjErrorEvent(event);
             }
         }

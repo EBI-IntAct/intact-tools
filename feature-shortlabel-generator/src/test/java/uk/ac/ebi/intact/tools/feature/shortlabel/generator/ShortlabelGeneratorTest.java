@@ -578,6 +578,33 @@ public class ShortlabelGeneratorTest {
         Assert.assertEquals("Q9BXS0-1:p.[Ile63Lys;Leu66Lys]", intactFeatureEvidence.getShortName());
     }
 
+    @Test
+    public void shortlabelGeneratorTest_NoUniprotName() {
+        ShortlabelGenerator shortlabelGenerator = getShortlabelGenerator();
+        // can be tested with "EBI-8524086" and "EBI-9825301"
+        IntactFeatureEvidence intactFeatureEvidence = new IntactFeatureEvidence();
+        // this above testFeature synced with following feature from database
+        //IntactFeatureEvidence intactFeatureEvidence = shortlabelGenerator.getFeatureEvidence("EBI-9095885",3);
+        intactFeatureEvidence.setShortName("test11-22test");
+        IntactProtein interactor = new IntactProtein("smrc1_human");
+        CvTerm featureType = new DefaultCvTerm("(mutation decreasing)");
+        featureType.setMIIdentifier("MI:0119");
+        intactFeatureEvidence.setType(featureType);
+        CvTerm interactorType = new DefaultCvTerm("protein");
+        interactor.setInteractorType(interactorType);
+        (interactor).setSequence("MAAAAGGGGPGTAVGATGSGIAAAAAGLAVYRRKDGGPATKFWESPETVSQLDSVRVWLGKHYKKYVHADAPTNKTLAGLVVQLLQFQEDAFGKHVTNPAFTKLPAKCFMDFKAGGALCHILGAAYKYKNEQGWRRFDLQNPSRMDRNVEMFMNIEKTLVQNNCLTRPNIYLIPDIDLKLANKLKDIIKRHQGTFTDEKSKASHHIYPYSSSQDDEEWLRPVMRKEKQVLVHWGFYPDSYDTWVHSNDVDAEIEDPPIPEKPWKVHVKWILDTDIFNEWMNEEDYEVDENRKPVSFRQRISTKNEEPVRSPERRDRKASANARKRKHSPSPPPPTPTESRKKSGKKGQASLYGKRRSQKEEDEQEDLTKDMEDPTPVPNIEEVVLPKNVNLKKDSENTPVKGGTVADLDEQDEETVTAGGKEDEDPAKGDQSRSVDLGEDNVTEQTNHIIIPSYASWFDYNCIHVIERRALPEFFNGKNKSKTPEIYLAYRNFMIDTYRLNPQEYLTSTACRRNLTGDVCAVMRVHAFLEQWGLVNYQVDPESRPMAMGPPPTPHFNVLADTPSGLVPLHLRSPQVPAAQQMLNFPEKNKEKPVDLQNFGLRTDIYSKKTLAKSKGASAGREWTEQETLLLLEALEMYKDDWNKVSEHVGSRTQDECILHFLRLPIEDPYLENSDASLGPLAYQPVPFSQSGNPVMSTVAFLASVVDPRVASAAAKAALEEFSRVREEVPLELVEAHVKKVQEAARASGKVDPTYGLESSCIAGTGPDEPEKLEGAEEEKMEADPDGQQPEKAENKVENETDEGDKAQDGENEKNSEKEQDSEVSEDTKSEEKETEENKELTDTCKERESDTGKKKVEHEISEGNVATAAAAALASAATKAKHLAAVEERKIKSLVALLVETQMKKLEIKLRHFEELETIMDREKEALEQQRQQLLTERQNFHMEQLKYAELRARQQMEQQQHGQNPQQAHQHSGGPGLAPLGAAGHPGMMPHQQPPPYPLMHHQMPPPHPPQPGQIPGPGSMMPGQHMPGRMIPTVAANIHPSGSGPTPPGMPPMPGNILGPRVPLTAPNGMYPPPPQQQPPPPPPADGVPPPPAPGPPASAAP");
+        ParticipantEvidence participant = new DefaultParticipantEvidence(interactor);
+        Position start1 = new DefaultPosition(1064);
+        Position end1 = new DefaultPosition(1064);
+        ResultingSequence resultingSequence1 = new DefaultResultingSequence("R", "K");
+        Range range1 = new ExperimentalRange(start1, end1, resultingSequence1);
+        intactFeatureEvidence.getRanges().clear();
+        intactFeatureEvidence.getRanges().add(range1);
+        intactFeatureEvidence.setParticipant(participant);
+        shortlabelGenerator.generateNewShortLabel(intactFeatureEvidence);
+        Assert.assertEquals("smrc1_human:p.Arg1064Lys", intactFeatureEvidence.getShortName());
+    }
+
 
     @Test
     @Ignore
