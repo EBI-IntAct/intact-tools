@@ -535,7 +535,6 @@ public class ShortlabelGeneratorTest {
     }
 
     @Test
-    @Ignore
     public void shortlabelGeneratorTest_ComplexAsInteractor() {
         ShortlabelGenerator shortlabelGenerator = getShortlabelGenerator();
         IntactFeatureEvidence intactFeatureEvidence = new IntactFeatureEvidence();
@@ -581,28 +580,52 @@ public class ShortlabelGeneratorTest {
     @Test
     public void shortlabelGeneratorTest_NoUniprotName() {
         ShortlabelGenerator shortlabelGenerator = getShortlabelGenerator();
-        // can be tested with "EBI-8524086" and "EBI-9825301"
         IntactFeatureEvidence intactFeatureEvidence = new IntactFeatureEvidence();
         // this above testFeature synced with following feature from database
-        //IntactFeatureEvidence intactFeatureEvidence = shortlabelGenerator.getFeatureEvidence("EBI-9095885",3);
+        //  IntactFeatureEvidence intactFeatureEvidence = shortlabelGenerator.getFeatureEvidence("EBI-15948171",3);
         intactFeatureEvidence.setShortName("test11-22test");
-        IntactProtein interactor = new IntactProtein("smrc1_human");
+        IntactProtein interactor = new IntactProtein("cyto");
         CvTerm featureType = new DefaultCvTerm("(mutation decreasing)");
         featureType.setMIIdentifier("MI:0119");
         intactFeatureEvidence.setType(featureType);
         CvTerm interactorType = new DefaultCvTerm("protein");
         interactor.setInteractorType(interactorType);
-        (interactor).setSequence("MAAAAGGGGPGTAVGATGSGIAAAAAGLAVYRRKDGGPATKFWESPETVSQLDSVRVWLGKHYKKYVHADAPTNKTLAGLVVQLLQFQEDAFGKHVTNPAFTKLPAKCFMDFKAGGALCHILGAAYKYKNEQGWRRFDLQNPSRMDRNVEMFMNIEKTLVQNNCLTRPNIYLIPDIDLKLANKLKDIIKRHQGTFTDEKSKASHHIYPYSSSQDDEEWLRPVMRKEKQVLVHWGFYPDSYDTWVHSNDVDAEIEDPPIPEKPWKVHVKWILDTDIFNEWMNEEDYEVDENRKPVSFRQRISTKNEEPVRSPERRDRKASANARKRKHSPSPPPPTPTESRKKSGKKGQASLYGKRRSQKEEDEQEDLTKDMEDPTPVPNIEEVVLPKNVNLKKDSENTPVKGGTVADLDEQDEETVTAGGKEDEDPAKGDQSRSVDLGEDNVTEQTNHIIIPSYASWFDYNCIHVIERRALPEFFNGKNKSKTPEIYLAYRNFMIDTYRLNPQEYLTSTACRRNLTGDVCAVMRVHAFLEQWGLVNYQVDPESRPMAMGPPPTPHFNVLADTPSGLVPLHLRSPQVPAAQQMLNFPEKNKEKPVDLQNFGLRTDIYSKKTLAKSKGASAGREWTEQETLLLLEALEMYKDDWNKVSEHVGSRTQDECILHFLRLPIEDPYLENSDASLGPLAYQPVPFSQSGNPVMSTVAFLASVVDPRVASAAAKAALEEFSRVREEVPLELVEAHVKKVQEAARASGKVDPTYGLESSCIAGTGPDEPEKLEGAEEEKMEADPDGQQPEKAENKVENETDEGDKAQDGENEKNSEKEQDSEVSEDTKSEEKETEENKELTDTCKERESDTGKKKVEHEISEGNVATAAAAALASAATKAKHLAAVEERKIKSLVALLVETQMKKLEIKLRHFEELETIMDREKEALEQQRQQLLTERQNFHMEQLKYAELRARQQMEQQQHGQNPQQAHQHSGGPGLAPLGAAGHPGMMPHQQPPPYPLMHHQMPPPHPPQPGQIPGPGSMMPGQHMPGRMIPTVAANIHPSGSGPTPPGMPPMPGNILGPRVPLTAPNGMYPPPPQQQPPPPPPADGVPPPPAPGPPASAAP");
+        (interactor).setSequence("SWESHKSGGETRL");
         ParticipantEvidence participant = new DefaultParticipantEvidence(interactor);
-        Position start1 = new DefaultPosition(1064);
-        Position end1 = new DefaultPosition(1064);
-        ResultingSequence resultingSequence1 = new DefaultResultingSequence("R", "K");
+        Position start1 = new DefaultPosition(8);
+        Position end1 = new DefaultPosition(8);
+        ResultingSequence resultingSequence1 = new DefaultResultingSequence("G", "E");
         Range range1 = new ExperimentalRange(start1, end1, resultingSequence1);
+
+        Position start2 = new DefaultPosition(5);
+        Position end2 = new DefaultPosition(5);
+        ResultingSequence resultingSequence2 = new DefaultResultingSequence("H", "Y");
+        Range range2 = new ExperimentalRange(start2, end2, resultingSequence2);
+
+        Position start3 = new DefaultPosition(4);
+        Position end3 = new DefaultPosition(4);
+        ResultingSequence resultingSequence3 = new DefaultResultingSequence("S", "L");
+        Range range3 = new ExperimentalRange(start3, end3, resultingSequence3);
+
+        Position start4 = new DefaultPosition(11);
+        Position end4 = new DefaultPosition(11);
+        ResultingSequence resultingSequence4 = new DefaultResultingSequence("T", "A");
+        Range range4 = new ExperimentalRange(start4, end4, resultingSequence4);
+
+        Position start5 = new DefaultPosition(10);
+        Position end5 = new DefaultPosition(10);
+        ResultingSequence resultingSequence5 = new DefaultResultingSequence("E", "D");
+        Range range5 = new ExperimentalRange(start5, end5, resultingSequence5);
+
         intactFeatureEvidence.getRanges().clear();
         intactFeatureEvidence.getRanges().add(range1);
+        intactFeatureEvidence.getRanges().add(range2);
+        intactFeatureEvidence.getRanges().add(range3);
+        intactFeatureEvidence.getRanges().add(range4);
+        intactFeatureEvidence.getRanges().add(range5);
         intactFeatureEvidence.setParticipant(participant);
         shortlabelGenerator.generateNewShortLabel(intactFeatureEvidence);
-        Assert.assertEquals("smrc1_human:p.Arg1064Lys", intactFeatureEvidence.getShortName());
+        Assert.assertEquals("cyto:p.[Ser4Leu;His5Tyr;Gly8Glu;Glu10Asp;Thr11Ala]", intactFeatureEvidence.getShortName());
     }
 
 
