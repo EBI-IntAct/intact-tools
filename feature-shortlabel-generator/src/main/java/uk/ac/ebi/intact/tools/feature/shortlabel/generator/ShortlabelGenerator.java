@@ -142,8 +142,6 @@ public class ShortlabelGenerator {
             interactorName = ((Protein) interactor).getUniprotkb();
         }
         if (interactorName == null) {
-            ObjRetrieveErrorEvent event = new ObjRetrieveErrorEvent(featureAc, interactorAc, ObjRetrieveErrorEvent.ErrorType.UNABLE_RETRIEVE_UNIPROT_NAME);
-            manager.fireOnRetrieveObjErrorEvent(event);
             // instead use interactor shortlabel
             interactorName = interactor.getShortName();
         }
