@@ -420,4 +420,12 @@ public class ShortlabelGenerator {
     public void setIntactDao(IntactDao intactDao) {
         this.intactDao = intactDao;
     }
+
+    public static Set<String> getAllowedFeatureTypes() {
+        return allowedFeatureTypes;
+    }
+
+    public static void setAllowedFeatureTypes(Set<String> allowedFeatureTypes) {
+        ShortlabelGenerator.allowedFeatureTypes = allowedFeatureTypes;
+    }
 }
