@@ -11,12 +11,8 @@ import uk.ac.ebi.intact.protein.mapping.model.contexts.IdentificationContext;
 import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
 import uk.ac.ebi.intact.uniprot.service.SimpleUniprotRemoteService;
 import uk.ac.ebi.intact.uniprot.service.UniprotService;
-import uk.ac.ebi.intact.uniprot.service.crossRefAdapter.ReflectionCrossReferenceBuilder;
-import uk.ac.ebi.intact.uniprot.service.crossRefAdapter.UniprotCrossReference;
 import uk.ac.ebi.kraken.interfaces.uniparc.UniParcEntry;
-import uk.ac.ebi.kraken.interfaces.uniprot.DatabaseCrossReference;
 import uk.ac.ebi.kraken.interfaces.uniprot.DatabaseType;
-import uk.ac.ebi.kraken.interfaces.uniprot.SecondaryUniProtAccession;
 import uk.ac.ebi.kraken.interfaces.uniprot.UniProtEntry;
 import uk.ac.ebi.uniprot.dataservice.client.Client;
 import uk.ac.ebi.uniprot.dataservice.client.QueryResult;
@@ -339,53 +335,6 @@ public class CrossReferenceSearchProcess extends ActionNeedingUniprotService {
         return null;
     }
 
-    /**
-     * @param protein    : the protein returned by the query
-     * @param identifier : the identifier
-     * @return true if there is an exact exact accession with this identifier
-     */
-    private boolean hasTheExactIdentifierInUniprot(UniProtEntry protein, String identifier) {
-
-        if (protein.getPrimaryUniProtAccession().getValue().equals(identifier)) {
-            return true;
-        }
-
-        if (!protein.getSecondaryUniProtAccessions().isEmpty()) {
-            for (SecondaryUniProtAccession ac : protein.getSecondaryUniProtAccessions()) {
-                if (ac.getValue() != null && ac.getValue().equals(identifier)) {
-                    return true;
-                }
-            }
-        }
-        return protein.getUniProtId().getValue().equals(identifier);
-
-    }
-
-    /**
-     * @param protein    : the protein returned by the query
-     * @param identifier : the identifier
-     * @param database   : the database name of MI
-     * @return the database name in Uniprot if there is an exact cross reference with this identifier
-     */
-    private String getTheDatabaseOfExactIdentifierInUniprotCrossReferences(UniProtEntry protein, String identifier, String database) {
-
-        Collection<DatabaseCrossReference> databaseCrossReferences = protein.getDatabaseCrossReferences();
-        ReflectionCrossReferenceBuilder builder = new ReflectionCrossReferenceBuilder();
-
-        for (DatabaseCrossReference ref : databaseCrossReferences) {
-            Collection<UniprotCrossReference> urefs = builder.build(ref);
-
-            for (UniprotCrossReference uref : urefs) {
-                if (uref.getAccessionNumber().equals(identifier)) {
-                    String databaseUniprot = uref.getDatabase();
-
-                    return databaseUniprot;
-                }
-            }
-        }
-
-        return null;
-    }
 
     /**
      * @param protein    : the protein returned by the query
