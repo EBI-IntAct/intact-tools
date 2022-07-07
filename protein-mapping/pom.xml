@@ -15,7 +15,7 @@
     <url>http://www.ebi.ac.uk/~intact/devsite/tools/protein-mapping</url>
 
     <properties>
-        <spring.version>4.3.12.RELEASE</spring.version>
+        <spring.version>5.2.21.RELEASE</spring.version>
     </properties>
 
     <build>
