@@ -3,7 +3,7 @@
     <parent>
         <groupId>uk.ac.ebi.intact.tools</groupId>
         <artifactId>tools-master</artifactId>
-        <version>1.0.26-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
 
 
@@ -15,7 +15,7 @@
     <url>http://www.ebi.ac.uk/~intact/devsite/tools/protein-mapping</url>
 
     <properties>
-        <spring.version>4.3.12.RELEASE</spring.version>
+        <spring.version>4.3.30.RELEASE</spring.version>
     </properties>
 
     <build>
@@ -138,12 +138,12 @@
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>1.1.1</version>
+            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
+            <version>3.2.2</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
@@ -174,7 +174,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.3.168</version>
+            <version>1.4.200</version>
         </dependency>
 
         <dependency>
@@ -187,7 +187,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>19.0</version>
+            <version>31.1-jre</version>
         </dependency>
     </dependencies>
 

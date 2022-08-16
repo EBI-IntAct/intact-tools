@@ -178,7 +178,7 @@ public class SwissprotRemappingProcessTest {
             Assert.assertEquals(true, reports.get(2) instanceof DefaultBlastReport);
             Assert.assertEquals(false, ((DefaultBlastReport) reports.get(2)).getBlastMatchingProteins().size() > 0);
             Assert.assertEquals(StatusLabel.FAILED, reports.get(1).getStatus().getLabel());
-            Assert.assertEquals(StatusLabel.FAILED, reports.get(2).getStatus().getLabel());
+            Assert.assertEquals(StatusLabel.TO_BE_REVIEWED, reports.get(2).getStatus().getLabel());
 
         } catch (ActionProcessingException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
