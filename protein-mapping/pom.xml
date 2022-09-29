@@ -3,7 +3,7 @@
     <parent>
         <groupId>uk.ac.ebi.intact.tools</groupId>
         <artifactId>tools-master</artifactId>
-        <version>1.0.25</version>
+        <version>1.0.26-SNAPSHOT</version>
     </parent>
 
 
@@ -187,7 +187,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>19.0</version>
+            <version>23.6-jre</version>
         </dependency>
     </dependencies>
 
