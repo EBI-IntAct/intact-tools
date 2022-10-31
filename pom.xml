@@ -3,7 +3,7 @@
     <parent>
         <groupId>uk.ac.ebi.intact.maven</groupId>
         <artifactId>intact-hibernate-master</artifactId>
-        <version>45-SNAPSHOT</version>
+        <version>46-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -20,7 +20,7 @@
         <currentVersion>${project.version}</currentVersion>
         <spring.version>4.3.30.RELEASE</spring.version>
         <psi.jami.version>3.3.0-SNAPSHOT</psi.jami.version>
-        <intact.jami.version>1.4.0-SNAPSHOT</intact.jami.version>
+        <intact.jami.version>2.1.0-SNAPSHOT</intact.jami.version>
         <intact.bridges.version>2.2.0-SNAPSHOT</intact.bridges.version>
         <intact.core.version>2.7.0-SNAPSHOT</intact.core.version>
         <maven.pmd.skip>true</maven.pmd.skip>
