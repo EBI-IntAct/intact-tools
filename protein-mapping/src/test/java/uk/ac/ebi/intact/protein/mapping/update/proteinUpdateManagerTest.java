@@ -3,7 +3,7 @@ package uk.ac.ebi.intact.protein.mapping.update;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import uk.ac.ebi.intact.protein.mapping.IntactBasicTestCase;
+import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import uk.ac.ebi.intact.protein.mapping.strategies.exceptions.StrategyException;
 
 import javax.xml.ws.soap.SOAPFaultException;

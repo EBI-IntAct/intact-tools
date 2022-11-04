@@ -3,10 +3,11 @@ package uk.ac.ebi.intact.protein.mapping.actions;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.context.ContextConfiguration;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import uk.ac.ebi.intact.model.BioSource;
 import uk.ac.ebi.intact.model.Protein;
-import uk.ac.ebi.intact.protein.mapping.IntactBasicTestCase;
 import uk.ac.ebi.intact.protein.mapping.actions.exception.ActionProcessingException;
 import uk.ac.ebi.intact.protein.mapping.factories.impl.DefaultReportsFactory;
 import uk.ac.ebi.intact.protein.mapping.model.actionReport.MappingReport;
@@ -22,6 +23,7 @@ import java.util.List;
  * @version $Id$
  * @since <pre>28-Apr-2010</pre>
  */
+@ContextConfiguration(locations = {"classpath*:/META-INF/jpa.test.spring.xml"})
 public class IntactNameSearchProcessTest  extends IntactBasicTestCase {
 
     private IntactNameSearchProcess process;

@@ -3,13 +3,14 @@ package uk.ac.ebi.intact.protein.mapping.actions;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.bridges.ncbiblast.model.BlastProtein;
 import uk.ac.ebi.intact.commons.util.Crc64;
 import uk.ac.ebi.intact.core.context.DataContext;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.protein.mapping.IntactBasicTestCase;
 import uk.ac.ebi.intact.protein.mapping.actions.exception.ActionProcessingException;
 import uk.ac.ebi.intact.protein.mapping.factories.impl.DefaultReportsFactory;
 import uk.ac.ebi.intact.protein.mapping.model.actionReport.MappingReport;
@@ -26,7 +27,8 @@ import java.util.List;
  * @version $Id$
  * @since <pre>17-May-2010</pre>
  */
-public class FeatureRangeCheckingProcessTest extends IntactBasicTestCase {
+@ContextConfiguration(locations = {"classpath*:/META-INF/jpa.test.spring.xml"})
+public class FeatureRangeCheckingProcessTest extends IntactBasicTestCase{
 
     private FeatureRangeCheckingProcess process;
     private UpdateContext context;
