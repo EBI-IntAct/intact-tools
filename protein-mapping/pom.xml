@@ -160,6 +160,11 @@
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.1</version>
+        </dependency>
 
         <!-- We have dbunit and junit in the compile classpath because they are
  used for the creation/drop of the schema and test base classes, that need to be
