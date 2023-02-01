@@ -3,7 +3,7 @@
     <parent>
         <groupId>uk.ac.ebi.intact.tools</groupId>
         <artifactId>tools-master</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.1.0</version>
     </parent>
 
 
@@ -160,6 +160,11 @@
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.1</version>
+        </dependency>
 
         <!-- We have dbunit and junit in the compile classpath because they are
  used for the creation/drop of the schema and test base classes, that need to be
@@ -174,13 +179,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.200</version>
-        </dependency>
-
-        <dependency>
-            <groupId>hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>1.8.0.10</version>
+            <version>${h2.version}</version>
             <scope>test</scope>
         </dependency>
 

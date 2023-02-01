@@ -22,8 +22,8 @@ import java.util.List;
 
 public class SwissprotRemappingProcessTest {
 
-    private SwissprotRemappingProcess process;
-    private BlastContext context;
+    private final SwissprotRemappingProcess process;
+    private final BlastContext context;
 
     public SwissprotRemappingProcessTest(){
         this.process = new SwissprotRemappingProcess(new DefaultReportsFactory());
@@ -67,7 +67,7 @@ public class SwissprotRemappingProcessTest {
             System.out.println(reports.get(1).getStatus().getLabel() + " " + reports.get(1).getStatus().getDescription());
 
             Assert.assertNull(ac);
-            Assert.assertEquals(true, reports.get(1) instanceof DefaultBlastReport);
+            Assert.assertTrue(reports.get(1) instanceof DefaultBlastReport);
             Assert.assertEquals(StatusLabel.FAILED, reports.get(1).getStatusLabel());
 
         } catch (ActionProcessingException e) {
@@ -103,7 +103,7 @@ public class SwissprotRemappingProcessTest {
             System.out.println(reports.get(1).getStatus().getLabel() + " " + reports.get(1).getStatus().getDescription());
 
             Assert.assertNull(ac);
-            Assert.assertEquals(true, reports.get(1) instanceof DefaultBlastReport);
+            Assert.assertTrue(reports.get(1) instanceof DefaultBlastReport);
             Assert.assertEquals(StatusLabel.FAILED, reports.get(1).getStatusLabel());
 
         } catch (ActionProcessingException e) {
@@ -138,8 +138,8 @@ public class SwissprotRemappingProcessTest {
             System.out.println(reports.get(2).getStatus().getLabel() + " " + reports.get(2).getStatus().getDescription());
 
             Assert.assertNull(ac);
-            Assert.assertEquals(true, reports.get(2) instanceof DefaultBlastReport);
-            Assert.assertEquals(true, ((DefaultBlastReport) reports.get(2)).getBlastMatchingProteins().size() == 0);
+            Assert.assertTrue(reports.get(2) instanceof DefaultBlastReport);
+            Assert.assertTrue(((DefaultBlastReport) reports.get(2)).getBlastMatchingProteins().isEmpty());
             Assert.assertEquals(StatusLabel.FAILED, reports.get(1).getStatus().getLabel());
             Assert.assertEquals(StatusLabel.FAILED, reports.get(2).getStatus().getLabel());
 
@@ -149,7 +149,7 @@ public class SwissprotRemappingProcessTest {
     }
 
     @Test
-    public void test_SwissprotRemapping_failed_WithEnsemblGeneAndOrganism_LowIdentity(){
+    public void test_SwissprotRemapping_ToBeReviewed_WithEnsemblGeneAndOrganism_LowIdentity(){
         String sequence = "MSAIQAAWPSGTECIAKYNFHGTAEQDLPFCKGDVLTIVAVTKDPNWYKAKNKVGREGII\n" +
                 "PANYVQKREGVKAGTKLSLMPWFHGKITREQAERLLYPPETGLFLVRESTNYPGDYTLCV\n" +
                 "SCDGKVEHYRIMYHASKLSIDEEVYFENLMQLVEHYTSDADGLCTRLIKPKVMEGTVAAQ\n" +
@@ -175,8 +175,8 @@ public class SwissprotRemappingProcessTest {
             System.out.println(reports.get(2).getStatus().getLabel() + " " + reports.get(2).getStatus().getDescription());
 
             Assert.assertNull(ac);
-            Assert.assertEquals(true, reports.get(2) instanceof DefaultBlastReport);
-            Assert.assertEquals(false, ((DefaultBlastReport) reports.get(2)).getBlastMatchingProteins().size() > 0);
+            Assert.assertTrue(reports.get(2) instanceof DefaultBlastReport);
+            Assert.assertFalse(((DefaultBlastReport) reports.get(2)).getBlastMatchingProteins().isEmpty());
             Assert.assertEquals(StatusLabel.FAILED, reports.get(1).getStatus().getLabel());
             Assert.assertEquals(StatusLabel.TO_BE_REVIEWED, reports.get(2).getStatus().getLabel());
 
