@@ -11,7 +11,7 @@
     <groupId>uk.ac.ebi.intact.tools</groupId>
     <artifactId>tools-master</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
 
     <name>IntAct Tools</name>
     <description>Tools Master POM</description>
@@ -20,7 +20,7 @@
         <currentVersion>${project.version}</currentVersion>
         <spring.version>4.3.30.RELEASE</spring.version>
         <psi.jami.version>3.3.0</psi.jami.version>
-        <intact.jami.version>2.1.0</intact.jami.version>
+        <intact.jami.version>2.1.1-SNAPSHOT</intact.jami.version>
         <intact.bridges.version>2.2.0</intact.bridges.version>
         <intact.core.version>2.7.0</intact.core.version>
         <maven.pmd.skip>true</maven.pmd.skip>
