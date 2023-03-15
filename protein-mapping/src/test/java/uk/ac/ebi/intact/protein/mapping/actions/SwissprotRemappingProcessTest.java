@@ -149,7 +149,7 @@ public class SwissprotRemappingProcessTest {
     }
 
     @Test
-    public void test_SwissprotRemapping_ToBeReviewed_WithEnsemblGeneAndOrganism_LowIdentity(){
+    public void test_SwissprotRemapping_failed_WithEnsemblGeneAndOrganism_LowIdentity(){
         String sequence = "MSAIQAAWPSGTECIAKYNFHGTAEQDLPFCKGDVLTIVAVTKDPNWYKAKNKVGREGII\n" +
                 "PANYVQKREGVKAGTKLSLMPWFHGKITREQAERLLYPPETGLFLVRESTNYPGDYTLCV\n" +
                 "SCDGKVEHYRIMYHASKLSIDEEVYFENLMQLVEHYTSDADGLCTRLIKPKVMEGTVAAQ\n" +
@@ -176,9 +176,9 @@ public class SwissprotRemappingProcessTest {
 
             Assert.assertNull(ac);
             Assert.assertTrue(reports.get(2) instanceof DefaultBlastReport);
-            Assert.assertFalse(((DefaultBlastReport) reports.get(2)).getBlastMatchingProteins().isEmpty());
+            Assert.assertTrue(((DefaultBlastReport) reports.get(2)).getBlastMatchingProteins().isEmpty());
             Assert.assertEquals(StatusLabel.FAILED, reports.get(1).getStatus().getLabel());
-            Assert.assertEquals(StatusLabel.TO_BE_REVIEWED, reports.get(2).getStatus().getLabel());
+            Assert.assertEquals(StatusLabel.FAILED, reports.get(2).getStatus().getLabel());
 
         } catch (ActionProcessingException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
