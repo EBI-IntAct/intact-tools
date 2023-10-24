@@ -168,17 +168,17 @@ public class SwissprotRemappingProcessTest {
             String ac = this.process.runAction(context);
             List<MappingReport> reports = this.process.getListOfActionReports();
             Assert.assertEquals(3, reports.size());
-            for (String warn : reports.get(2).getWarnings()){
+            for (String warn : reports.get(1).getWarnings()){
                 System.out.println(warn);
             }
 
-            System.out.println(reports.get(2).getStatus().getLabel() + " " + reports.get(2).getStatus().getDescription());
+            System.out.println(reports.get(1).getStatus().getLabel() + " " + reports.get(1).getStatus().getDescription());
 
             Assert.assertNull(ac);
-            Assert.assertTrue(reports.get(2) instanceof DefaultBlastReport);
-            Assert.assertTrue(((DefaultBlastReport) reports.get(2)).getBlastMatchingProteins().isEmpty());
+            Assert.assertTrue(reports.get(1) instanceof DefaultBlastReport);
+            Assert.assertTrue(((DefaultBlastReport) reports.get(1)).getBlastMatchingProteins().isEmpty());
+            Assert.assertEquals(StatusLabel.FAILED, reports.get(0).getStatus().getLabel());
             Assert.assertEquals(StatusLabel.FAILED, reports.get(1).getStatus().getLabel());
-            Assert.assertEquals(StatusLabel.FAILED, reports.get(2).getStatus().getLabel());
 
         } catch (ActionProcessingException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
