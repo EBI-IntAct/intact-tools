@@ -21,7 +21,7 @@
         <spring.version>4.3.30.RELEASE</spring.version>
         <psi.jami.version>3.5.0-SNAPSHOT</psi.jami.version>
         <intact.jami.version>2.2.6-SNAPSHOT</intact.jami.version>
-        <intact.bridges.version>2.2.1</intact.bridges.version>
+        <intact.bridges.version>2.2.2-SNAPSHOT</intact.bridges.version>
         <intact.core.version>2.8.1</intact.core.version>
         <maven.pmd.skip>true</maven.pmd.skip>
     </properties>
