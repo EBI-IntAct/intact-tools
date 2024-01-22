@@ -33,6 +33,11 @@ public class FeatureListener implements ShortlabelGeneratorListener {
     }
 
     @Override
+    public void onOtherErrorEvent(OtherErrorEvent event) {
+        System.out.println(event.getFeatureAc()  + "\t " + event.getErrorType().getMessage() + ":\t" + event.getErrorDetails());
+    }
+
+    @Override
     public void onRetrieveObjectError(ObjRetrieveErrorEvent event) {
         System.out.println(event.getMessage());
     }
