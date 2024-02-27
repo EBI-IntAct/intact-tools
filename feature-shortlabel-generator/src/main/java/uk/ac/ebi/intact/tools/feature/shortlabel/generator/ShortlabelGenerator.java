@@ -11,6 +11,7 @@ import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.extension.ExperimentalRange;
 import uk.ac.ebi.intact.jami.model.extension.IntactFeatureEvidence;
 import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
+import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.events.*;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.listener.ShortlabelGeneratorListener;
 import uk.ac.ebi.intact.tools.feature.shortlabel.generator.manager.ShortlabelGeneratorManager;
@@ -368,6 +369,9 @@ public class ShortlabelGenerator {
         if (noMutationUpdate || orgShortlabel.equals(featureEvidence.getShortName())) {
             UnmodifiedMutationShortlabelEvent event = new UnmodifiedMutationShortlabelEvent(featureAc, interactorAc, featureEvidence, noMutationUpdate);
             manager.fireOnUnmodifiedMutationShortlabelEvent(event);
+        } else if (featureEvidence.getShortName().length() > IntactUtils.MAX_SHORT_LABEL_LEN) {
+            OtherErrorEvent event = new OtherErrorEvent(featureAc, OtherErrorEvent.ErrorType.SHORT_LABEL_TOO_LONG, featureEvidence.getShortName());
+            manager.fireOnOtherErrorEvent(event);
         } else {
             ModifiedMutationShortlabelEvent event = new ModifiedMutationShortlabelEvent(featureAc, interactorAc, featureEvidence, orgShortlabel, false);
             manager.fireOnModifiedMutationShortlabelEvent(event);

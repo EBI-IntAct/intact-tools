@@ -23,4 +23,6 @@ public interface ShortlabelGeneratorListener extends EventListener {
     void onResultingSequenceChanged(ResultingSequenceChangedEvent event);
 
     void onObjectTypeError(TypeErrorEvent event);
+
+    void onOtherErrorEvent(OtherErrorEvent event);
 }
