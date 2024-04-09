@@ -22,7 +22,7 @@
         <psi.jami.version>3.5.1-SNAPSHOT</psi.jami.version>
         <intact.jami.version>2.2.7-SNAPSHOT</intact.jami.version>
         <intact.bridges.version>2.2.2</intact.bridges.version>
-        <intact.core.version>2.8.1</intact.core.version>
+        <intact.core.version>2.8.2-SNAPSHOT</intact.core.version>
         <maven.pmd.skip>true</maven.pmd.skip>
     </properties>
 
