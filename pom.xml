@@ -19,7 +19,7 @@
     <properties>
         <currentVersion>${project.version}</currentVersion>
         <spring.version>4.3.30.RELEASE</spring.version>
-        <psi.jami.version>3.5.1-SNAPSHOT</psi.jami.version>
+        <psi.jami.version>3.5.2-SNAPSHOT</psi.jami.version>
         <intact.jami.version>3.0.2-SNAPSHOT</intact.jami.version>
         <intact.bridges.version>2.2.3-SNAPSHOT</intact.bridges.version>
         <intact.core.version>3.0.2-SNAPSHOT</intact.core.version>
