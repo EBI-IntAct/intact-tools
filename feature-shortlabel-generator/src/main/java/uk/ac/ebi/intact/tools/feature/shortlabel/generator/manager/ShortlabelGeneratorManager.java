@@ -62,6 +62,11 @@ public class ShortlabelGeneratorManager {
         }
     }
 
+    public void fireOnOtherErrorEvent(OtherErrorEvent event) {
+        for (ShortlabelGeneratorListener eventListener : getListeners(ShortlabelGeneratorListener.class)){
+            eventListener.onOtherErrorEvent(event);
+        }
+    }
 
     public void addListener(ShortlabelGeneratorListener listener) {
         listenerList.add(ShortlabelGeneratorListener.class, listener);

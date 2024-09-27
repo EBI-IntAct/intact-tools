@@ -78,10 +78,11 @@ public class ProteinUpdateManager {
                 "left join p.xrefs as xrefs " +
                 "left join p.annotations as annotations " +
                 "where p.objClass = 'uk.ac.ebi.intact.model.ProteinImpl' "+
-                "and p not in ( "+
+                "and not exists ( "+
                 "select p2 "+
                 "from InteractorImpl p2 join p2.xrefs as xrefs "+
-                "where p2.objClass = 'uk.ac.ebi.intact.model.ProteinImpl' "+
+                "where p2.ac = p.ac " +
+                "and p2.objClass = 'uk.ac.ebi.intact.model.ProteinImpl' "+
                 "and xrefs.cvDatabase.ac = 'EBI-31' " +
                 "and xrefs.cvXrefQualifier.shortLabel <> 'uniprot-removed-ac' )");
 
@@ -96,10 +97,11 @@ public class ProteinUpdateManager {
                 "left join p.xrefs as xrefs " +
                 "left join p.annotations as annotations " +
                 "where p.objClass = 'uk.ac.ebi.intact.model.ProteinImpl' "+
-                "and p not in ( "+
+                "and not exists ( "+
                 "select p2 "+
                 "from InteractorImpl p2 join p2.xrefs as xrefs "+
-                "where p2.objClass = 'uk.ac.ebi.intact.model.ProteinImpl' "+
+                "where p2.ac = p.ac " +
+                "and p2.objClass = 'uk.ac.ebi.intact.model.ProteinImpl' "+
                 "and xrefs.cvDatabase.ac = 'EBI-31' " +
                 "and xrefs.cvXrefQualifier.shortLabel = 'identity') " +
                 "and p in ( " +
